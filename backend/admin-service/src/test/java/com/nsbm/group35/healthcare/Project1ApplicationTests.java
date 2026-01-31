@@ -1,4 +1,4 @@
-package com.example.project_1;
+package com.nsbm.group35.healthcare;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
