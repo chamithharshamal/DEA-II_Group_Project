@@ -11,9 +11,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>admin-service</artifactId>
-    <name>admin-service</name>
-    <description>Admin microservice for the Healthcare System</description>
+    <artifactId>billing-service</artifactId>
+    <name>billing-service</name>
+    <description>Billing microservice for the Healthcare System</description>
 
     <dependencies>
         <dependency>
