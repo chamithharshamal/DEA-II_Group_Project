@@ -1,7 +1,14 @@
 package com.nsbm.group35.healthcare.admin.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "departments")
 public class Department {
 
+    @Id
     private String departmentId;
     private String departmentName;
     private String description;
