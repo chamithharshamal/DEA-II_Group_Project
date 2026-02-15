@@ -20,7 +20,7 @@ public class StaffController {
     @Autowired
     private StaffService staffService;
 
-    
+
     @PostMapping
     public ResponseEntity<Staff> addStaff(@RequestBody StaffDTO staffDTO) {
         return ResponseEntity.ok(staffService.addStaff(staffDTO));
