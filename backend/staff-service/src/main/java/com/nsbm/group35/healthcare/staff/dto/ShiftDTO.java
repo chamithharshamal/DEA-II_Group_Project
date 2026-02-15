@@ -8,7 +8,7 @@ public class ShiftDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-   
+
     public ShiftDTO() {
     }
 
