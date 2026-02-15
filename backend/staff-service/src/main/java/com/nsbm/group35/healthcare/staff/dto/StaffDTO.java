@@ -9,7 +9,7 @@ public class StaffDTO {
     private String department;
     private String phoneNumber;
 
-    // No-Args Constructor
+
     public StaffDTO() {
     }
 
