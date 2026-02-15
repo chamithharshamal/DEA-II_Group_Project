@@ -32,8 +32,6 @@ public class Shift {
         this.endTime = endTime;
         this.date = date;
     }
-
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
