@@ -1,11 +1,8 @@
 package com.nsbm.group35.healthcare.staff.controller;
 
-import com.nsbm.group35.healthcare.staff.dto.ShiftDTO;
-import com.nsbm.group35.healthcare.staff.dto.StaffDTO;
 import com.nsbm.group35.healthcare.staff.model.Shift;
 import com.nsbm.group35.healthcare.staff.model.Staff;
 import com.nsbm.group35.healthcare.staff.service.StaffService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +14,17 @@ import java.util.List;
 @RequestMapping("/api/staff")
 public class StaffController {
 
-    @Autowired
-    private StaffService staffService;
+    private final StaffService staffService;
 
-
-    @PostMapping
-    public ResponseEntity<Staff> addStaff(@RequestBody StaffDTO staffDTO) {
-        return ResponseEntity.ok(staffService.addStaff(staffDTO));
+    public StaffController(StaffService staffService) {
+        this.staffService = staffService;
     }
 
-    // GET: List all Staff
     @GetMapping
     public List<Staff> getAllStaff() {
         return staffService.getAllStaff();
     }
 
-    // GET: Staff by ID
     @GetMapping("/{id}")
     public ResponseEntity<Staff> getStaffById(@PathVariable Long id) {
         return staffService.getStaffById(id)
@@ -40,25 +32,30 @@ public class StaffController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // PUT: Update Staff
+    @PostMapping
+    public Staff addStaff(@RequestBody Staff staff) {
+        return staffService.addStaff(staff);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Staff> updateStaff(@PathVariable Long id, @RequestBody StaffDTO staffDTO) {
-        return ResponseEntity.ok(staffService.updateStaff(id, staffDTO));
+    public ResponseEntity<Staff> updateStaff(@PathVariable Long id, @RequestBody Staff staff) {
+        Staff updatedStaff = staffService.updateStaff(id, staff);
+        if (updatedStaff != null) {
+            return ResponseEntity.ok(updatedStaff);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    // POST: Assign Shift
     @PostMapping("/shifts")
-    public ResponseEntity<Shift> assignShift(@RequestBody ShiftDTO shiftDTO) {
-        return ResponseEntity.ok(staffService.assignShift(shiftDTO));
+    public Shift assignShift(@RequestBody Shift shift) {
+        return staffService.assignShift(shift);
     }
 
-    // GET: Shifts by Staff
     @GetMapping("/{id}/shifts")
     public List<Shift> getShiftsByStaff(@PathVariable Long id) {
         return staffService.getShiftsByStaff(id);
     }
 
-    // GET: Shifts by Date (e.g., /api/staff/shifts?date=2026-02-15)
     @GetMapping("/shifts")
     public List<Shift> getShiftsByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return staffService.getShiftsByDate(date);
