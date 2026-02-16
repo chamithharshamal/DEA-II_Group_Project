@@ -1,7 +1,6 @@
 package com.nsbm.group35.healthcare.staff.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,50 +9,53 @@ public class Shift {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "staff_id", nullable = false)
-    private Staff staff;
-
+    private Long shiftId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private LocalDate date;
 
-    // No-Args Constructor
+    @ManyToOne
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
+
     public Shift() {
     }
 
-    // All-Args Constructor
-    public Shift(Long id, Staff staff, LocalDateTime startTime, LocalDateTime endTime, LocalDate date) {
-        this.id = id;
-        this.staff = staff;
+    public Shift(Long shiftId, LocalDateTime startTime, LocalDateTime endTime, Staff staff) {
+        this.shiftId = shiftId;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.date = date;
+        this.staff = staff;
     }
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public Staff getStaff() { return staff; }
-    public void setStaff(Staff staff) { this.staff = staff; }
+    public Long getShiftId() {
+        return shiftId;
+    }
 
-    public LocalDateTime getStartTime() { return startTime; }
-    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public void setShiftId(Long shiftId) {
+        this.shiftId = shiftId;
+    }
 
-    public LocalDateTime getEndTime() { return endTime; }
-    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
-    @Override
-    public String toString() {
-        return "Shift{" +
-                "id=" + id +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", date=" + date +
-                '}';
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 }
