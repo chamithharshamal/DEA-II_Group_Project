@@ -19,6 +19,7 @@
     <name>Healthcare Microservices - Parent</name>
     <description>Parent POM for the Healthcare Microservices System (DEA-II Group 35)</description>
 
+    <!-- ===================== MODULES ===================== -->
     <modules>
         <module>discovery-service</module>
         <module>api-gateway</module>
@@ -33,6 +34,7 @@
         <module>staff-service</module>
     </modules>
 
+    <!-- ================ GLOBAL PROPERTIES ================ -->
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
@@ -41,8 +43,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- =========== DEPENDENCY MANAGEMENT (BOM) =========== -->
+    <!-- These versions are inherited by ALL child modules.   -->
+    <!-- Child modules only need to declare <groupId> and     -->
+    <!-- <artifactId> — the version comes from here.          -->
     <dependencyManagement>
         <dependencies>
+            <!-- Spring Cloud BOM — manages Eureka, Gateway, Feign, etc. -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -53,18 +60,23 @@
         </dependencies>
     </dependencyManagement>
 
+    <!-- ============= COMMON DEPENDENCIES ================= -->
+    <!-- Every child module automatically gets these.         -->
     <dependencies>
+        <!-- Actuator — health checks, metrics -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!-- Lombok — reduces boilerplate (getters, setters, constructors) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
+        <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -72,6 +84,7 @@
         </dependency>
     </dependencies>
 
+    <!-- ================== BUILD CONFIG =================== -->
     <build>
         <plugins>
             <plugin>
