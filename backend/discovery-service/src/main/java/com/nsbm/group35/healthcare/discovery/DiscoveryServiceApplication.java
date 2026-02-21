@@ -1,4 +1,4 @@
-package main.java.com.nsbm.group35.healthcare.discovery;
+package com.nsbm.group35.healthcare.discovery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -5,6 +5,8 @@ spring:
   application:
     name: discovery-service
 
+# ---- Eureka Server Configuration ----
+# This IS the server, so it should NOT register itself as a client.
 eureka:
   instance:
     hostname: localhost

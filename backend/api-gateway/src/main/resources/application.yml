@@ -7,14 +7,32 @@ spring:
 
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: false
+
+      # ---- Route Definitions ----
+      # Each route forwards requests from the gateway to a downstream service
+      # discovered via Eureka (lb:// = load-balanced lookup by service name).
       routes:
+        # Admin Service
         - id: admin-service
           uri: lb://admin-service
           predicates:
             - Path=/api/admin/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=2   # /api/admin/users -> /users
 
+        # Patient Service
         - id: patient-service
           uri: lb://patient-service
           predicates:
@@ -22,6 +40,7 @@ spring:
           filters:
             - StripPrefix=2
 
+        # Doctor Service
         - id: doctor-service
           uri: lb://doctor-service
           predicates:
@@ -29,6 +48,7 @@ spring:
           filters:
             - StripPrefix=2
 
+        # Appointment Service
         - id: appointment-service
           uri: lb://appointment-service
           predicates:
@@ -36,6 +56,7 @@ spring:
           filters:
             - StripPrefix=2
 
+        # Billing Service
         - id: billing-service
           uri: lb://billing-service
           predicates:
@@ -43,6 +64,7 @@ spring:
           filters:
             - StripPrefix=2
 
+        # Lab Report Service
         - id: lab-report-service
           uri: lb://lab-report-service
           predicates:
@@ -50,6 +72,7 @@ spring:
           filters:
             - StripPrefix=2
 
+        # Notification Service
         - id: notification-service
           uri: lb://notification-service
           predicates:
@@ -57,6 +80,7 @@ spring:
           filters:
             - StripPrefix=2
 
+        # Pharmacy Service
         - id: pharmacy-service
           uri: lb://pharmacy-service
           predicates:
@@ -64,6 +88,7 @@ spring:
           filters:
             - StripPrefix=2
 
+        # Staff Service
         - id: staff-service
           uri: lb://staff-service
           predicates:
@@ -71,11 +96,13 @@ spring:
           filters:
             - StripPrefix=2
 
+      # Enable service discovery-based routing
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
 
+# ---- Eureka Client Configuration ----
 eureka:
   client:
     service-url:
