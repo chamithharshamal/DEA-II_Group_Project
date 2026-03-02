@@ -1,22 +1,15 @@
 package com.nsbm.group35.healthcare.admin.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+public class DepartmentDTO {
 
-@Entity
-@Table(name = "departments")
-public class Department {
-
-    @Id
     private String departmentId;
     private String departmentName;
     private String description;
 
-    public Department() {
+    public DepartmentDTO() {
     }
 
-    public Department(String departmentId, String departmentName, String description) {
+    public DepartmentDTO(String departmentId, String departmentName, String description) {
         this.departmentId = departmentId;
         this.departmentName = departmentName;
         this.description = description;
