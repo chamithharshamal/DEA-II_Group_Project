@@ -21,6 +21,7 @@
 
     <!-- ===================== MODULES ===================== -->
     <modules>
+        <module>common-utils</module>
         <module>discovery-service</module>
         <module>api-gateway</module>
         <module>admin-service</module>
