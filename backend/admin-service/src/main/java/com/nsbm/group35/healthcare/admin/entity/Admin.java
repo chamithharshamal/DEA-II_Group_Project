@@ -1,14 +1,18 @@
 package com.nsbm.group35.healthcare.admin.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Table(name = "admins")
 public class Admin {
 
     @Id
+    @GeneratedValue
+    @UuidGenerator
     private String adminId;
     private String name;
     private String email;

@@ -32,7 +32,7 @@ export default function Dashboard() {
     <div>
       <div className="page-header">
         <h1>System Dashboard</h1>
-        <p>Overview of all services — Healthcare Group 35</p>
+        <p>Overview of all services — HealthCare HMS</p>
       </div>
 
       <div className="stat-grid mb-6">

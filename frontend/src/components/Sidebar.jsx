@@ -1,29 +1,32 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { section: 'Overview' },
-  { path: '/',             icon: '📊', label: 'Dashboard' },
   { section: 'Management' },
-  { path: '/admin',        icon: '🛡️',  label: 'Admin' },
-  { path: '/patients',     icon: '🏥', label: 'Patients' },
-  { path: '/doctors',      icon: '👨‍⚕️', label: 'Doctors' },
-  { path: '/staff',        icon: '👥', label: 'Staff' },
+  { path: '/app/admin',         icon: '🛡️',  label: 'Admin' },
+  { path: '/app/patients',      icon: '🏥',  label: 'Patients' },
+  { path: '/app/doctors',       icon: '👨‍⚕️', label: 'Doctors' },
+  { path: '/app/staff',         icon: '👥',  label: 'Staff' },
   { section: 'Clinical' },
-  { path: '/appointments', icon: '📅', label: 'Appointments' },
-  { path: '/lab-reports',  icon: '🔬', label: 'Lab Reports' },
+  { path: '/app/appointments',  icon: '📅',  label: 'Appointments' },
+  { path: '/app/lab-reports',   icon: '🔬',  label: 'Lab Reports' },
   { section: 'Finance & Ops' },
-  { path: '/billing',      icon: '💳', label: 'Billing' },
-  { path: '/pharmacy',     icon: '💊', label: 'Pharmacy' },
+  { path: '/app/billing',       icon: '💳',  label: 'Billing' },
+  { path: '/app/pharmacy',      icon: '💊',  label: 'Pharmacy' },
   { section: 'System' },
-  { path: '/notifications', icon: '🔔', label: 'Notifications' },
+  { path: '/app/notifications', icon: '🔔',  label: 'Notifications' },
 ];
 
 export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <span>🏨</span> HealthCare
+        <span>✚</span>
+        <div>
+          HealthCare
+          <span className="logo-sub">Hospital Management</span>
+        </div>
       </div>
+
       <nav className="sidebar-nav">
         {navItems.map((item, i) =>
           item.section ? (
@@ -32,7 +35,6 @@ export default function Sidebar() {
             <NavLink
               key={item.path}
               to={item.path}
-              end={item.path === '/'}
               className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
             >
               <span className="icon">{item.icon}</span>
@@ -41,6 +43,11 @@ export default function Sidebar() {
           )
         )}
       </nav>
+
+      <div className="sidebar-footer">
+        <div style={{ marginBottom: 2, fontWeight: 600, fontSize: '0.73rem', color: 'var(--color-text)' }}>HealthCare HMS</div>
+        <div>123 Hospital Rd, Colombo · v1.0</div>
+      </div>
     </aside>
   );
 }

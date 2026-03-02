@@ -1,8 +1,8 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 const pageTitles = {
-  '/':              'Dashboard',
+  '/':              'Landing Page',
   '/admin':         'Admin Management',
   '/patients':      'Patient Management',
   '/doctors':       'Doctor Management',
@@ -16,7 +16,10 @@ const pageTitles = {
 
 export default function Layout({ children }) {
   const location = useLocation();
-  const title = pageTitles[location.pathname] ||
+  const navigate = useNavigate();
+
+  const title =
+    pageTitles[location.pathname] ||
     Object.entries(pageTitles).find(([k]) => location.pathname.startsWith(k + '/'))?.[1] ||
     'Healthcare System';
 
@@ -27,8 +30,12 @@ export default function Layout({ children }) {
         <header className="topbar">
           <span className="topbar-title">{title}</span>
           <div className="topbar-right">
-            <span className="text-muted text-sm">Group 35</span>
-            <div className="avatar">G35</div>
+            <div className="topbar-badge" onClick={() => navigate('/notifications')} title="Notifications">
+              🔔
+              <span className="dot" />
+            </div>
+            <span className="text-muted text-sm">Admin</span>
+            <div className="avatar" title="Admin">ADM</div>
           </div>
         </header>
         <main className="page-body">{children}</main>
