@@ -1,14 +1,7 @@
 package com.nsbm.group35.healthcare.patient.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+public class PatientDTO {
 
-@Entity
-@Table(name = "patients")
-public class Patient {
-
-    @Id
     private String patientId;
     private String firstName;
     private String lastName;
@@ -20,10 +13,10 @@ public class Patient {
     private String gender;
     private String bloodGroup;
 
-    public Patient() {
+    public PatientDTO() {
     }
 
-    public Patient(String patientId, String firstName, String lastName, String email, String password,
+    public PatientDTO(String patientId, String firstName, String lastName, String email, String password,
             String phone, String address, String dateOfBirth, String gender, String bloodGroup) {
         this.patientId = patientId;
         this.firstName = firstName;

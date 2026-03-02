@@ -1,11 +1,13 @@
 package com.nsbm.group35.healthcare.patient.controller;
 
-import com.nsbm.group35.healthcare.patient.model.Patient;
+import com.nsbm.group35.healthcare.patient.model.PatientDTO;
+import com.nsbm.group35.healthcare.patient.model.LoginRequest;
 import com.nsbm.group35.healthcare.patient.service.PatientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/patients")
@@ -17,26 +19,37 @@ public class PatientController {
         this.patientService = patientService;
     }
 
+    // Public endpoint — no token needed
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            String token = patientService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(Map.of("token", token));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping
-    public List<Patient> getAllPatients() {
+    public List<PatientDTO> getAllPatients() {
         return patientService.getAllPatients();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Patient> getPatientById(@PathVariable String id) {
+    public ResponseEntity<PatientDTO> getPatientById(@PathVariable String id) {
         return patientService.getPatientById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Patient createPatient(@RequestBody Patient patient) {
-        return patientService.createPatient(patient);
+    public PatientDTO createPatient(@RequestBody PatientDTO patientDTO) {
+        return patientService.createPatient(patientDTO);
     }
 
     @PutMapping("/{id}")
-    public Patient updatePatient(@PathVariable String id, @RequestBody Patient patient) {
-        return patientService.updatePatient(id, patient);
+    public PatientDTO updatePatient(@PathVariable String id, @RequestBody PatientDTO patientDTO) {
+        return patientService.updatePatient(id, patientDTO);
     }
 
     @DeleteMapping("/{id}")
