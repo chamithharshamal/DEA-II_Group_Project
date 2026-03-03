@@ -18,6 +18,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/api/staff': {
+        target: 'http://localhost:8089',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })
