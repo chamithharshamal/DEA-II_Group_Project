@@ -1,6 +1,6 @@
 package com.nsbm.group35.healthcare.billing.service;
 
-import com.nsbm.group35.healthcare.billing.model.Billing;
+import com.nsbm.group35.healthcare.billing.entity.Billing;
 import com.nsbm.group35.healthcare.billing.repository.BillingRepository;
 import org.springframework.stereotype.Service;
 

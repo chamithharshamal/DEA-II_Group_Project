@@ -1,6 +1,6 @@
 package com.nsbm.group35.healthcare.billing.controller;
 
-import com.nsbm.group35.healthcare.billing.model.Billing;
+import com.nsbm.group35.healthcare.billing.entity.Billing;
 import com.nsbm.group35.healthcare.billing.service.BillingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

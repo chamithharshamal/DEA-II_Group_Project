@@ -1,8 +1,10 @@
 package com.nsbm.group35.healthcare.billing.repository;
 
-import com.nsbm.group35.healthcare.billing.model.Billing;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.nsbm.group35.healthcare.billing.entity.Billing;
+
 import java.util.List;
 
 @Repository

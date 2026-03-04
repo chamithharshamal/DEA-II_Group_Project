@@ -1,4 +1,4 @@
-package com.nsbm.group35.healthcare.billing.model;
+package com.nsbm.group35.healthcare.billing.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
