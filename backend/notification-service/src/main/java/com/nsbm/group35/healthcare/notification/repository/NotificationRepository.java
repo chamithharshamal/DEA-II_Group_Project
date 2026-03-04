@@ -1,6 +1,6 @@
 package com.nsbm.group35.healthcare.notification.repository;
 
-import com.nsbm.group35.healthcare.notification.model.Notification;
+import com.nsbm.group35.healthcare.notification.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,14 +1,7 @@
 package com.nsbm.group35.healthcare.notification.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+public class NotificationDTO {
 
-@Entity
-@Table(name = "notifications")
-public class Notification {
-
-    @Id
     private String notificationId;
     private String recipientId;
     private String recipientType;
@@ -19,10 +12,10 @@ public class Notification {
     private String createdAt;
     private String readAt;
 
-    public Notification() {
+    public NotificationDTO() {
     }
 
-    public Notification(String notificationId, String recipientId, String recipientType, String type,
+    public NotificationDTO(String notificationId, String recipientId, String recipientType, String type,
             String title, String message, String status, String createdAt, String readAt) {
         this.notificationId = notificationId;
         this.recipientId = recipientId;
