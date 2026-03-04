@@ -1,4 +1,4 @@
-package com.nsbm.group35.healthcare.pharmacy.model;
+package com.nsbm.group35.healthcare.pharmacy.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -25,8 +25,8 @@ public class Prescription {
     }
 
     public Prescription(Long id, String patientId, String doctorId,
-                        LocalDate prescribedDate, boolean dispensed,
-                        List<Medication> medications) {
+            LocalDate prescribedDate, boolean dispensed,
+            List<Medication> medications) {
         this.id = id;
         this.patientId = patientId;
         this.doctorId = doctorId;

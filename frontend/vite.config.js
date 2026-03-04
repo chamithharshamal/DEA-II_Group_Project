@@ -33,6 +33,21 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/api/pharmacists': {
+        target: 'http://localhost:8088',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/medications': {
+        target: 'http://localhost:8088',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/prescriptions': {
+        target: 'http://localhost:8088',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })

@@ -1,6 +1,6 @@
 package com.nsbm.group35.healthcare.pharmacy.repository;
 
-import com.nsbm.group35.healthcare.pharmacy.model.Medication;
+import com.nsbm.group35.healthcare.pharmacy.entity.Medication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

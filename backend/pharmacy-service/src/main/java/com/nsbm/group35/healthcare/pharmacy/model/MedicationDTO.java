@@ -1,31 +1,26 @@
 package com.nsbm.group35.healthcare.pharmacy.model;
 
-import jakarta.persistence.*;
+import com.nsbm.group35.healthcare.pharmacy.entity.Medication;
 
-@Entity
-@Table(name = "medications")
-public class Medication {
+public class MedicationDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String description;
     private int stock;
     private double price;
-    private int quantity; // quantity requested in a prescription
+    private int quantity;
 
-    public Medication() {
+    public MedicationDTO() {
     }
 
-    public Medication(Long id, String name, String description, int stock, double price, int quantity) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.stock = stock;
-        this.price = price;
-        this.quantity = quantity;
+    public MedicationDTO(Medication medication) {
+        this.id = medication.getId();
+        this.name = medication.getName();
+        this.description = medication.getDescription();
+        this.stock = medication.getStock();
+        this.price = medication.getPrice();
+        this.quantity = medication.getQuantity();
     }
 
     public Long getId() {
