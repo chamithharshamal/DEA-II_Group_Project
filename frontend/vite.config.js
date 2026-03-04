@@ -28,6 +28,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/api/doctors': {
+        target: 'http://localhost:8084',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })
