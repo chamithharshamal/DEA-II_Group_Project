@@ -1,6 +1,6 @@
 package com.nsbm.group35.healthcare.doctor.repository;
 
-import com.nsbm.group35.healthcare.doctor.model.Doctor;
+import com.nsbm.group35.healthcare.doctor.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

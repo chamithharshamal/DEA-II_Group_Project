@@ -1,4 +1,4 @@
-package com.nsbm.group35.healthcare.doctor.model;
+package com.nsbm.group35.healthcare.doctor.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
