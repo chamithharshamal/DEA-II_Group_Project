@@ -1,4 +1,4 @@
-package com.nsbm.group35.healthcare.labreport.model;
+package com.nsbm.group35.healthcare.labreport.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -117,4 +117,3 @@ public class LabReport {
         this.notes = notes;
     }
 }
-
