@@ -1,53 +1,65 @@
 package com.nsbm.group35.healthcare.appointment.controller;
 
-import com.nsbm.group35.healthcare.appointment.model.Appointment;
+import com.nsbm.group35.healthcare.appointment.model.AppointmentDTO;
 import com.nsbm.group35.healthcare.appointment.service.AppointmentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/appointments")
+@Slf4j
 public class AppointmentController {
 
-    @Autowired
-    private AppointmentService service;
+    private final AppointmentService appointmentService;
+
+    public AppointmentController(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
+    }
 
     @PostMapping
-    public ResponseEntity<Appointment> book(@RequestBody Appointment appointment) {
-        return ResponseEntity.ok(service.bookAppointment(appointment));
+    public ResponseEntity<AppointmentDTO> bookAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+        log.info("Booking new appointment for patient ID: {}", appointmentDTO.getPatientId());
+        AppointmentDTO savedAppointment = appointmentService.bookAppointment(appointmentDTO);
+        return new ResponseEntity<>(savedAppointment, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Appointment> getById(@PathVariable Long id) {
-        return service.getAppointmentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<AppointmentDTO> getAppointment(@PathVariable String id) {
+        log.info("Fetching appointment with ID: {}", id);
+        return ResponseEntity.ok(appointmentService.getAppointmentById(id));
     }
 
     @GetMapping("/patient/{patientId}")
-    public List<Appointment> getByPatient(@PathVariable Long patientId) {
-        return service.getByPatient(patientId);
+    public ResponseEntity<List<AppointmentDTO>> getByPatient(@PathVariable String patientId) {
+        log.info("Fetching appointments for patient ID: {}", patientId);
+        return ResponseEntity.ok(appointmentService.getByPatient(patientId));
     }
 
     @GetMapping("/doctor/{doctorId}")
-    public List<Appointment> getByDoctor(@PathVariable Long doctorId) {
-        return service.getByDoctor(doctorId);
+    public ResponseEntity<List<AppointmentDTO>> getByDoctor(@PathVariable String doctorId) {
+        log.info("Fetching appointments for doctor ID: {}", doctorId);
+        return ResponseEntity.ok(appointmentService.getByDoctor(doctorId));
     }
 
     @PatchMapping("/{id}/cancel")
-    public ResponseEntity<Appointment> cancel(@PathVariable Long id) {
-        return ResponseEntity.ok(service.cancelAppointment(id));
+    public ResponseEntity<AppointmentDTO> cancelAppointment(@PathVariable String id) {
+        log.info("Cancelling appointment with ID: {}", id);
+        return ResponseEntity.ok(appointmentService.cancelAppointment(id));
     }
 
     @PatchMapping("/{id}/complete")
-    public ResponseEntity<Appointment> complete(@PathVariable Long id) {
-        return ResponseEntity.ok(service.completeAppointment(id));
+    public ResponseEntity<AppointmentDTO> completeAppointment(@PathVariable String id) {
+        log.info("Marking appointment with ID: {} as completed", id);
+        return ResponseEntity.ok(appointmentService.completeAppointment(id));
     }
 
     @GetMapping("/doctor/{doctorId}/today")
-    public List<Appointment> getToday(@PathVariable Long doctorId) {
-        return service.getTodayAppointments(doctorId);
+    public ResponseEntity<List<AppointmentDTO>> getTodaysAppointments(@PathVariable String doctorId) {
+        log.info("Fetching today's appointments for doctor ID: {}", doctorId);
+        return ResponseEntity.ok(appointmentService.getTodaysAppointments(doctorId));
     }
 }
