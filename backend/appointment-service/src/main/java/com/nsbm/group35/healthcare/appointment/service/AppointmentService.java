@@ -1,50 +1,118 @@
 package com.nsbm.group35.healthcare.appointment.service;
 
-import com.nsbm.group35.healthcare.appointment.model.Appointment;
+import com.nsbm.group35.healthcare.appointment.client.DoctorClient;
+import com.nsbm.group35.healthcare.appointment.client.PatientClient;
+import com.nsbm.group35.healthcare.appointment.entity.Appointment;
+import com.nsbm.group35.healthcare.appointment.model.AppointmentDTO;
 import com.nsbm.group35.healthcare.appointment.repository.AppointmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
 
-    @Autowired
-    private AppointmentRepository repository;
+    private final AppointmentRepository appointmentRepository;
+    private final PatientClient patientClient;
+    private final DoctorClient doctorClient;
 
-    public Appointment bookAppointment(Appointment appointment) {
-        appointment.setStatus("PLANNED"); // Required logic for booking
-        return repository.save(appointment);
+    public AppointmentService(AppointmentRepository appointmentRepository,
+            PatientClient patientClient,
+            DoctorClient doctorClient) {
+        this.appointmentRepository = appointmentRepository;
+        this.patientClient = patientClient;
+        this.doctorClient = doctorClient;
     }
 
-    public Optional<Appointment> getAppointmentById(Long id) {
-        return repository.findById(id);
+    public AppointmentDTO bookAppointment(AppointmentDTO appointmentDTO) {
+        // Verify patient exists
+        try {
+            Map<String, Object> patient = patientClient.getPatientById(appointmentDTO.getPatientId());
+            if (patient == null) {
+                throw new RuntimeException("Patient not found with ID: " + appointmentDTO.getPatientId());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error verifying patient: " + e.getMessage());
+        }
+
+        // Verify doctor exists
+        try {
+            Map<String, Object> doctor = doctorClient.getDoctorById(appointmentDTO.getDoctorId());
+            if (doctor == null) {
+                throw new RuntimeException("Doctor not found with ID: " + appointmentDTO.getDoctorId());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error verifying doctor: " + e.getMessage());
+        }
+
+        Appointment appointment = toEntity(appointmentDTO);
+        appointment.setStatus("PLANNED");
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        return toDTO(savedAppointment);
     }
 
-    public List<Appointment> getByPatient(Long patientId) {
-        return repository.findByPatientId(patientId);
+    public AppointmentDTO getAppointmentById(String id) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + id));
+        return toDTO(appointment);
     }
 
-    public List<Appointment> getByDoctor(Long doctorId) {
-        return repository.findByDoctorId(doctorId);
+    public List<AppointmentDTO> getByPatient(String patientId) {
+        return appointmentRepository.findByPatientId(patientId).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public Appointment cancelAppointment(Long id) {
-        Appointment appointment = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+    public List<AppointmentDTO> getByDoctor(String doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public AppointmentDTO cancelAppointment(String id) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + id));
         appointment.setStatus("CANCELLED");
-        return repository.save(appointment);
+        return toDTO(appointmentRepository.save(appointment));
     }
 
-    public Appointment completeAppointment(Long id) {
-        Appointment appointment = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+    public AppointmentDTO completeAppointment(String id) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + id));
         appointment.setStatus("COMPLETED");
-        return repository.save(appointment);
+        return toDTO(appointmentRepository.save(appointment));
     }
 
-    public List<Appointment> getTodayAppointments(Long doctorId) {
-        return repository.findByDoctorIdAndStatus(doctorId, "PLANNED");
+    public List<AppointmentDTO> getTodaysAppointments(String doctorId) {
+        // Implement logic for today's appointments if needed, currently using custom
+        // finder
+        return appointmentRepository.findByDoctorIdAndStatus(doctorId, "PLANNED").stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    private Appointment toEntity(AppointmentDTO dto) {
+        return Appointment.builder()
+                .id(dto.getId())
+                .patientId(dto.getPatientId())
+                .doctorId(dto.getDoctorId())
+                .appointmentTime(dto.getAppointmentTime())
+                .status(dto.getStatus())
+                .reason(dto.getReason())
+                .build();
+    }
+
+    private AppointmentDTO toDTO(Appointment entity) {
+        return AppointmentDTO.builder()
+                .id(entity.getId())
+                .patientId(entity.getPatientId())
+                .doctorId(entity.getDoctorId())
+                .appointmentTime(entity.getAppointmentTime())
+                .status(entity.getStatus())
+                .reason(entity.getReason())
+                .build();
     }
 }
