@@ -48,6 +48,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/api/billings': {
+        target: 'http://localhost:8083',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })
