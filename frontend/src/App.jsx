@@ -9,7 +9,7 @@ import DoctorRoutes       from './pages/doctor';
 import AppointmentRoutes  from './pages/appointment';
 import BillingRoutes      from './pages/billing';
 import PharmacyRoutes     from './pages/pharmacy';
-import LabReportRoutes    from './pages/lab-report';
+import LabReportRoutes    from './pages/lab';
 import StaffRoutes        from './pages/staff';
 import NotificationRoutes from './pages/notification';
 

@@ -1,6 +1,7 @@
 package com.nsbm.group35.healthcare.labreport.controller;
 
-import com.nsbm.group35.healthcare.labreport.model.LabReport;
+import com.nsbm.group35.healthcare.labreport.model.LabReportRequestDTO;
+import com.nsbm.group35.healthcare.labreport.model.LabReportResponseDTO;
 import com.nsbm.group35.healthcare.labreport.service.LabReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,28 +19,30 @@ public class LabReportController {
     private LabReportService labReportService;
 
     @GetMapping
-    public ResponseEntity<List<LabReport>> getAllLabReports() {
-        List<LabReport> reports = labReportService.getAllLabReports();
-        return ResponseEntity.ok(reports);
+    public ResponseEntity<List<LabReportResponseDTO>> getAllLabReports() {
+        return ResponseEntity.ok(labReportService.getAllLabReports());
     }
 
     @GetMapping("/{reportId}")
-    public ResponseEntity<LabReport> getLabReportById(@PathVariable String reportId) {
-        Optional<LabReport> report = labReportService.getLabReportById(reportId);
+    public ResponseEntity<LabReportResponseDTO> getLabReportById(@PathVariable String reportId) {
+        Optional<LabReportResponseDTO> report = labReportService.getLabReportById(reportId);
         return report.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<LabReport> createLabReport(@RequestBody LabReport labReport) {
-        LabReport createdReport = labReportService.createLabReport(labReport);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdReport);
+    public ResponseEntity<LabReportResponseDTO> createLabReport(@RequestBody LabReportRequestDTO requestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(labReportService.createLabReport(requestDTO));
     }
 
     @PutMapping("/{reportId}")
-    public ResponseEntity<LabReport> updateLabReport(@PathVariable String reportId, @RequestBody LabReport labReport) {
-        LabReport updatedReport = labReportService.updateLabReport(reportId, labReport);
-        return ResponseEntity.ok(updatedReport);
+    public ResponseEntity<LabReportResponseDTO> updateLabReport(@PathVariable String reportId,
+            @RequestBody LabReportRequestDTO requestDTO) {
+        LabReportResponseDTO updatedReport = labReportService.updateLabReport(reportId, requestDTO);
+        if (updatedReport != null) {
+            return ResponseEntity.ok(updatedReport);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{reportId}")
@@ -49,40 +52,35 @@ public class LabReportController {
     }
 
     @GetMapping("/patient/{patientId}")
-    public ResponseEntity<List<LabReport>> getLabReportsByPatientId(@PathVariable String patientId) {
-        List<LabReport> reports = labReportService.getLabReportsByPatientId(patientId);
-        return ResponseEntity.ok(reports);
+    public ResponseEntity<List<LabReportResponseDTO>> getLabReportsByPatientId(@PathVariable String patientId) {
+        return ResponseEntity.ok(labReportService.getLabReportsByPatientId(patientId));
     }
 
     @GetMapping("/doctor/{doctorId}")
-    public ResponseEntity<List<LabReport>> getLabReportsByDoctorId(@PathVariable String doctorId) {
-        List<LabReport> reports = labReportService.getLabReportsByDoctorId(doctorId);
-        return ResponseEntity.ok(reports);
+    public ResponseEntity<List<LabReportResponseDTO>> getLabReportsByDoctorId(@PathVariable String doctorId) {
+        return ResponseEntity.ok(labReportService.getLabReportsByDoctorId(doctorId));
     }
 
     @GetMapping("/test/{testType}")
-    public ResponseEntity<List<LabReport>> getLabReportsByTestType(@PathVariable String testType) {
-        List<LabReport> reports = labReportService.getLabReportsByTestType(testType);
-        return ResponseEntity.ok(reports);
+    public ResponseEntity<List<LabReportResponseDTO>> getLabReportsByTestType(@PathVariable String testType) {
+        return ResponseEntity.ok(labReportService.getLabReportsByTestType(testType));
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<LabReport>> getLabReportsByStatus(@PathVariable String status) {
-        List<LabReport> reports = labReportService.getLabReportsByStatus(status);
-        return ResponseEntity.ok(reports);
+    public ResponseEntity<List<LabReportResponseDTO>> getLabReportsByStatus(@PathVariable String status) {
+        return ResponseEntity.ok(labReportService.getLabReportsByStatus(status));
     }
 
     @GetMapping("/patient/{patientId}/status/{status}")
-    public ResponseEntity<List<LabReport>> getLabReportsByPatientIdAndStatus(
+    public ResponseEntity<List<LabReportResponseDTO>> getLabReportsByPatientIdAndStatus(
             @PathVariable String patientId, @PathVariable String status) {
-        List<LabReport> reports = labReportService.getLabReportsByPatientIdAndStatus(patientId, status);
-        return ResponseEntity.ok(reports);
+        return ResponseEntity.ok(labReportService.getLabReportsByPatientIdAndStatus(patientId, status));
     }
 
     @PatchMapping("/{reportId}/status")
-    public ResponseEntity<LabReport> updateLabReportStatus(@PathVariable String reportId, 
-                                                            @RequestParam String status) {
-        LabReport report = labReportService.updateLabReportStatus(reportId, status);
+    public ResponseEntity<LabReportResponseDTO> updateLabReportStatus(@PathVariable String reportId,
+            @RequestParam String status) {
+        LabReportResponseDTO report = labReportService.updateLabReportStatus(reportId, status);
         if (report != null) {
             return ResponseEntity.ok(report);
         }
@@ -90,10 +88,10 @@ public class LabReportController {
     }
 
     @PatchMapping("/{reportId}/results")
-    public ResponseEntity<LabReport> submitLabReportResults(@PathVariable String reportId, 
-                                                            @RequestParam String results,
-                                                            @RequestParam String normalRange) {
-        LabReport report = labReportService.submitLabReportResults(reportId, results, normalRange);
+    public ResponseEntity<LabReportResponseDTO> submitLabReportResults(@PathVariable String reportId,
+            @RequestParam String results,
+            @RequestParam String normalRange) {
+        LabReportResponseDTO report = labReportService.submitLabReportResults(reportId, results, normalRange);
         if (report != null) {
             return ResponseEntity.ok(report);
         }

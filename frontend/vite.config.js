@@ -53,6 +53,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/api/lab-reports': {
+        target: 'http://localhost:8085',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api\/lab-reports/, '/api/lab-reports'),
+      },
     },
   },
 })
