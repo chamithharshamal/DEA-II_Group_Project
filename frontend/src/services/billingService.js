@@ -9,7 +9,7 @@ const billingApiClient = axios.create({
 
 billingApiClient.interceptors.request.use((config) => {
     // Assuming admin or other authed user
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('adminToken') || localStorage.getItem('token'); 
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
