@@ -71,7 +71,7 @@ The system follows a **microservices architecture** pattern using Spring Cloud:
   ┌────▼───┐ ┌────▼───┐ ┌─────▼──┐ ┌──▼────┐ ┌───▼────┐ ┌───▼─────┐
   │ Admin  │ │Patient │ │ Doctor │ │Appoint│ │Billing │ │Pharmacy │
   │Service │ │Service │ │Service │ │Service│ │Service │ │ Service │
-  │ :8082  │ │ :8087  │ │ :8084  │ │ :8082 │ │ :8083  │ │  :8088  │
+  │ :8082  │ │ :8087  │ │ :8084  │ │ :8086 │ │ :8083  │ │  :8088  │
   └────────┘ └────────┘ └────────┘ └───────┘ └────────┘ └─────────┘
        │           │           │       
   ┌────▼───┐ ┌────▼───┐ ┌─────▼──┐
@@ -148,7 +148,7 @@ The system follows a **microservices architecture** pattern using Spring Cloud:
 | **admin-service**       | `8082` | Admin authentication, department & product management|
 | **patient-service**     | `8087` | Patient registration, profiles, medical history      |
 | **doctor-service**      | `8084` | Doctor profiles, specializations, availability       |
-| **appointment-service** | `8082` | Appointment booking, scheduling, status tracking     |
+| **appointment-service** | `8086` | Appointment booking, scheduling, status tracking     |
 | **billing-service**     | `8083` | Invoice generation, payment processing, billing records |
 | **pharmacy-service**    | `8088` | Medication inventory, prescriptions, dispensing      |
 | **lab-report-service**  | `8085` | Lab test results submission and retrieval             |
@@ -295,6 +295,7 @@ The frontend will be available at **`http://localhost:5173`**.
 | Billing Service      | `8083` |
 | Doctor Service       | `8084` |
 | Lab Report Service   | `8085` |
+| Appointment Service  | `8086` |
 | Patient Service      | `8087` |
 | Pharmacy Service     | `8088` |
 | Staff Service        | `8089` |
@@ -372,6 +373,7 @@ DEA-II_Group_Project/
 │           ├── pharmacyService.js
 │           ├── labReportService.js
 │           ├── notificationService.js
+│           ├── patientService.js
 │           └── staffService.js
 │
 ├── .gitignore
