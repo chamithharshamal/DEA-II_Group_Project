@@ -1,6 +1,7 @@
 package com.nsbm.group35.healthcare.billing.model;
 
-public class BillingRequestDTO {
+public class BillingResponseDTO {
+    private String billingId;
     private String appointmentId;
     private String patientId;
     private String doctorId;
@@ -8,11 +9,22 @@ public class BillingRequestDTO {
     private double labTestFee;
     private double medicationFee;
     private double otherFee;
+    private double totalAmount; // Calculated on the backend
+    private String paymentStatus; // e.g., PENDING, PAID
     private String paymentMethod;
+    private String billingDate; // Set on creation
     private String dueDate;
     private String remarks;
 
     // Getters and Setters
+    public String getBillingId() {
+        return billingId;
+    }
+
+    public void setBillingId(String billingId) {
+        this.billingId = billingId;
+    }
+
     public String getAppointmentId() {
         return appointmentId;
     }
@@ -69,12 +81,36 @@ public class BillingRequestDTO {
         this.otherFee = otherFee;
     }
 
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
     public String getPaymentMethod() {
         return paymentMethod;
     }
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getBillingDate() {
+        return billingDate;
+    }
+
+    public void setBillingDate(String billingDate) {
+        this.billingDate = billingDate;
     }
 
     public String getDueDate() {
