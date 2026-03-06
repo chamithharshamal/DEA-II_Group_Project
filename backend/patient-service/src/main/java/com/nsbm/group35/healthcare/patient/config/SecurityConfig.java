@@ -29,8 +29,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Login endpoint is public
-                        .requestMatchers("/api/patients/login").permitAll()
+                        // Login & Registration & Profiles are public
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/patients/login").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/patients").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/patients/**").permitAll()
                         // All other endpoints require a valid JWT
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
