@@ -1,10 +1,11 @@
-// ─── Admin List — connected to admin-service ──────────────────────────────────
+// ─── Admin List ──────────────────────────────────────────────────
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import AdminForm from './AdminForm';
 import * as adminService from '../../services/adminService';
 
-const STATUS_BADGE = { Active: 'badge-success', Inactive: 'badge-warning' };
-const ROLE_BADGE   = { 'Super Admin': 'badge-danger', Admin: 'badge-info', Moderator: 'badge-warning' };
+// Fallback status styles if 'status' class is used
+const ROLE_BADGE = { 'Super Admin': 'danger', Admin: 'info', Moderator: 'warning' };
 
 export default function AdminList() {
   const [admins,   setAdmins]   = useState([]);
@@ -79,47 +80,41 @@ export default function AdminList() {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* Error Banner */}
-      {error && (
-        <div style={{
-          background: '#fff0f0', border: '1px solid #fca5a5', borderRadius: 10,
-          padding: '12px 16px', marginBottom: 16, color: '#991b1b',
-          display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.875rem',
-        }}>
-          ⚠️ {error}
-          <button onClick={fetchAdmins} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#1a6fba', cursor: 'pointer', fontWeight: 600 }}>Retry</button>
-        </div>
-      )}
-
-      {/* Toolbar */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="search-bar" style={{ width: 300 }}>
-          <span className="search-icon">🔍</span>
+      <div className="flex-between mb-4 mt-2">
+        {/* Search */}
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <input
+            type="text"
+            className="input-field"
             placeholder="Search admins…"
             value={search}
             onChange={e => setSearch(e.target.value)}
+            style={{ width: '250px', padding: '10px 14px', marginBottom: 0 }}
           />
+          <div className="text-muted text-sm ml-2">
+            <b>{admins.length}</b> Admins ({admins.filter(a => a.role !== 'Inactive').length} Active)
+          </div>
         </div>
+        
         <button className="btn btn-primary" onClick={() => setEditing('new')}>
           + Add Admin
         </button>
       </div>
 
-      {/* Summary */}
-      <div className="flex gap-3 mb-4">
-        <span className="badge badge-info">{admins.length} Total</span>
-        <span className="badge badge-success">{admins.filter(a => a.role !== 'Inactive').length} Active</span>
-      </div>
+      {error && (
+        <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '12px', borderRadius: '8px', marginBottom: '16px' }}>
+          ⚠️ {error}
+          <button onClick={fetchAdmins} style={{ marginLeft: '12px', background: 'none', border: 'none', color: '#1a6fba', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}>Retry</button>
+        </div>
+      )}
 
-      {/* Loading */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: 48, color: 'var(--color-muted)' }}>
-          ⏳ Loading admins…
+        <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+          Loading admins…
         </div>
       ) : (
-        <div className="table-wrapper">
-          <table>
+        <div className="table-container mt-4">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>#</th>
@@ -127,26 +122,34 @@ export default function AdminList() {
                 <th>Email</th>
                 <th>Role</th>
                 <th>Admin ID</th>
-                <th>Actions</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
-                <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--color-muted)', padding: 32 }}>
-                  {error ? 'Could not load admins.' : 'No admins found.'}
-                </td></tr>
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: 32 }}>
+                    {error ? 'Could not load admins.' : 'No admins found.'}
+                  </td>
+                </tr>
               ) : filtered.map((a, i) => (
                 <tr key={a.adminId || i}>
                   <td className="text-muted text-xs">{i + 1}</td>
                   <td style={{ fontWeight: 600 }}>{a.name}</td>
                   <td className="text-muted">{a.email}</td>
-                  <td><span className={`badge ${ROLE_BADGE[a.role] || 'badge-info'}`}>{a.role}</span></td>
-                  <td className="text-muted text-xs">{a.adminId}</td>
                   <td>
-                    <div className="flex gap-2">
-                      <button className="btn btn-outline btn-sm btn-icon" title="Edit" onClick={() => setEditing(a)}>✏️</button>
-                      <button className="btn btn-danger btn-sm btn-icon" title="Delete" onClick={() => setDeleting(a.adminId)}>🗑️</button>
-                    </div>
+                    <span className={`status ${ROLE_BADGE[a.role] || 'info'}`}>
+                      {a.role}
+                    </span>
+                  </td>
+                  <td className="text-muted text-xs">{a.adminId}</td>
+                  <td style={{ textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                    <button className="btn btn-sm btn-outline" title="Edit" onClick={() => setEditing(a)}>
+                      ✏️ Edit
+                    </button>
+                    <button className="btn btn-sm btn-danger" title="Delete" onClick={() => setDeleting(a.adminId)}>
+                      🗑️
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -166,22 +169,23 @@ export default function AdminList() {
       )}
 
       {/* Delete Confirm Modal */}
-      {deleting && (
+      {deleting && createPortal(
         <div className="modal-overlay" onClick={() => setDeleting(null)}>
           <div className="modal" style={{ maxWidth: 380 }} onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Delete Admin</h2>
               <button className="modal-close" onClick={() => setDeleting(null)}>×</button>
             </div>
-            <p style={{ color: 'var(--color-muted)', fontSize: '0.875rem' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
               Are you sure you want to delete this admin? This action cannot be undone.
             </p>
-            <div className="modal-footer">
-              <button className="btn btn-outline" onClick={() => setDeleting(null)}>Cancel</button>
+            <div className="modal-footer" style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button className="btn btn-secondary" onClick={() => setDeleting(null)}>Cancel</button>
               <button className="btn btn-danger" onClick={() => handleDelete(deleting)}>Delete</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

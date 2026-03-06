@@ -2,6 +2,7 @@
 // Fields match backend StaffDTO: staffId, firstName, lastName, email, password, role, department
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const ROLES = ['Doctor', 'Nurse', 'Receptionist', 'Admin', 'Pharmacist', 'Lab Technician', 'Staff'];
 const DEPARTMENTS = ['Emergency', 'Cardiology', 'Pediatrics', 'Radiology', 'Pharmacy', 'Laboratory', 'General Medicine', 'Outpatient'];
@@ -66,7 +67,7 @@ export default function StaffForm({ staff, onSave, onClose, saving }) {
                                 );
                 }
 
-                return (
+                return createPortal(
                                 <div className="modal-overlay" onClick={onClose}>
                                                 <div className="modal" onClick={e => e.stopPropagation()}>
                                                                 <div className="modal-header">
@@ -111,6 +112,7 @@ export default function StaffForm({ staff, onSave, onClose, saving }) {
                                                                                 </div>
                                                                 </form>
                                                 </div>
-                                </div>
+                                </div>,
+                                document.body
                 );
 }

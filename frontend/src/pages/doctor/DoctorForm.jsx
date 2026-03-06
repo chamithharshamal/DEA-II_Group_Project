@@ -1,121 +1,140 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
+
+const SPECIALIZATIONS = [
+  'Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics',
+  'General Practice', 'Dermatology', 'Psychiatry'
+];
 
 export default function DoctorForm({ doctor, onSave, onClose, saving }) {
-  const isEdit = !!doctor;
+  const isEdit = Boolean(doctor);
 
-  const [formData, setFormData] = useState({
-    doctorId:        '',
-    firstName:       '',
-    lastName:        '',
-    email:           '',
+  const [form, setForm] = useState({
+    doctorId:        doctor?.doctorId || '',
+    firstName:       doctor?.firstName || '',
+    lastName:        doctor?.lastName || '',
+    email:           doctor?.email || '',
+    phone:           doctor?.phone || '',
+    address:         doctor?.address || '',
+    specialization:  doctor?.specialization || 'General Practice',
+    qualifications:  doctor?.qualifications || '',
+    experienceYears: doctor?.experienceYears || 0,
     password:        '',
-    phone:           '',
-    address:         '',
-    specialization:  '',
-    qualifications:  '',
-    experienceYears: 0,
   });
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (doctor) {
-      setFormData({
-        doctorId:        doctor.doctorId || '',
-        firstName:       doctor.firstName || '',
-        lastName:        doctor.lastName || '',
-        email:           doctor.email || '',
-        password:        '', // Intentionally blank for security
-        phone:           doctor.phone || '',
-        address:         doctor.address || '',
-        specialization:  doctor.specialization || '',
-        qualifications:  doctor.qualifications || '',
-        experienceYears: doctor.experienceYears || 0,
-      });
-    }
-  }, [doctor]);
+  function validate() {
+    const e = {};
+    if (!form.firstName.trim()) e.firstName = 'First name is required';
+    if (!form.lastName.trim()) e.lastName = 'Last name is required';
+    if (!form.email.includes('@')) e.email = 'Valid email required';
+    if (!isEdit && !form.password.trim()) e.password = 'Password is required for new doctor';
+    if (!form.phone.trim()) e.phone = 'Phone number is required';
+    return e;
+  }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
-    onSave(formData);
-  };
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
 
-  return (
+    const payload = {
+      doctorId:        form.doctorId || undefined,
+      firstName:       form.firstName,
+      lastName:        form.lastName,
+      email:           form.email,
+      phone:           form.phone,
+      address:         form.address,
+      specialization:  form.specialization,
+      qualifications:  form.qualifications,
+      experienceYears: Number(form.experienceYears),
+    };
+    if (form.password.trim()) payload.password = form.password;
+
+    onSave(payload);
+  }
+
+  function field(key, label, type = 'text', opts = {}) {
+    return (
+      <div className="form-group">
+        <label>{label}</label>
+        {opts.options ? (
+          <select
+            className="form-control"
+            style={errors[key] ? { borderColor: 'var(--danger)' } : {}}
+            value={form[key]}
+            onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+          >
+            {opts.options.map(o => <option key={o}>{o}</option>)}
+          </select>
+        ) : opts.multiline ? (
+          <textarea
+            className="form-control"
+            rows={2}
+            style={errors[key] ? { borderColor: 'var(--danger)' } : { resize: 'vertical' }}
+            value={form[key]}
+            placeholder={opts.placeholder}
+            onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+          />
+        ) : (
+          <input
+            className="form-control"
+            style={errors[key] ? { borderColor: 'var(--danger)' } : {}}
+            type={type}
+            value={form[key]}
+            placeholder={opts.placeholder}
+            min={opts.min}
+            onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+            autoComplete={opts.autoComplete}
+          />
+        )}
+        {errors[key] && <span style={{ color: 'var(--danger)', fontSize: '0.75rem' }}>{errors[key]}</span>}
+      </div>
+    );
+  }
+
+  return createPortal(
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: '600px' }} onClick={e => e.stopPropagation()}>
+      <div className="modal" style={{ maxWidth: 640 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>{isEdit ? 'Edit Doctor' : 'Add New Doctor'}</h2>
-          <button className="modal-close" onClick={onClose} disabled={saving}>×</button>
+          <h2>{isEdit ? '✏️ Edit Doctor' : '+ Add Doctor'}</h2>
+          <button className="modal-close" onClick={onClose}>×</button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ padding: '0 24px 24px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div className="form-group">
-              <label>First Name</label>
-              <input required name="firstName" value={formData.firstName} onChange={handleChange} />
-            </div>
-
-            <div className="form-group">
-              <label>Last Name</label>
-              <input required name="lastName" value={formData.lastName} onChange={handleChange} />
-            </div>
-
-            <div className="form-group">
-              <label>Email</label>
-              <input required type="email" name="email" value={formData.email} onChange={handleChange} />
-            </div>
-
-            <div className="form-group">
-              <label>{isEdit ? 'Password (leave blank to keep current)' : 'Password'}</label>
-              <input type="password" name="password" value={formData.password} onChange={handleChange} required={!isEdit} minLength={6} />
-            </div>
-
-            <div className="form-group">
-              <label>Phone Number</label>
-              <input required name="phone" value={formData.phone} onChange={handleChange} />
-            </div>
-
-            <div className="form-group">
-              <label>Years of Experience</label>
-              <input required type="number" min="0" name="experienceYears" value={formData.experienceYears} onChange={handleChange} />
-            </div>
-
-            <div className="form-group">
-              <label>Specialization</label>
-              <select required name="specialization" value={formData.specialization} onChange={handleChange}>
-                <option value="">-- Select Specialization --</option>
-                <option value="Cardiology">Cardiology</option>
-                <option value="Neurology">Neurology</option>
-                <option value="Orthopedics">Orthopedics</option>
-                <option value="Pediatrics">Pediatrics</option>
-                <option value="General Practice">General Practice</option>
-                <option value="Dermatology">Dermatology</option>
-                <option value="Psychiatry">Psychiatry</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Qualifications</label>
-              <input required placeholder="e.g. MBBS, MD" name="qualifications" value={formData.qualifications} onChange={handleChange} />
-            </div>
-
-            <div className="form-group" style={{ gridColumn: 'span 2' }}>
-              <label>Address</label>
-              <textarea required rows={2} name="address" value={formData.address} onChange={handleChange} style={{ width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }} />
-            </div>
+        <form onSubmit={handleSubmit}>
+          <div className="grid-2">
+            {field('firstName', 'First Name', 'text', { placeholder: 'Jane' })}
+            {field('lastName',  'Last Name',  'text', { placeholder: 'Smith' })}
           </div>
 
-          <div className="modal-footer" style={{ marginTop: '24px', padding: 0 }}>
-            <button type="button" className="btn btn-outline" onClick={onClose} disabled={saving}>Cancel</button>
+          <div className="grid-2">
+            {field('email', 'Email Address', 'email', { placeholder: 'dr.smith@hospital.lk', autoComplete: 'off' })}
+            {field('phone', 'Phone Number',  'tel',   { placeholder: '+94 77 123 4567' })}
+          </div>
+
+          <div className="grid-3">
+            {field('specialization', 'Specialization', 'text', { options: SPECIALIZATIONS })}
+            {field('experienceYears', 'Experience (Yrs)', 'number', { min: 0 })}
+            {field('qualifications', 'Qualifications', 'text', { placeholder: 'e.g. MBBS, MD' })}
+          </div>
+
+          {field('address', 'Address', 'text', { multiline: true, placeholder: '123 Main Street, Colombo' })}
+
+          {field('password',
+            isEdit ? 'New Password (leave blank to keep)' : 'Password *',
+            'password',
+            { autoComplete: 'new-password', placeholder: '••••••••' }
+          )}
+
+          <div className="modal-footer">
+            <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
             <button type="submit" className="btn btn-primary" disabled={saving}>
-              {saving ? 'Saving...' : 'Save Doctor'}
+              {saving ? 'Saving…' : (isEdit ? 'Save Changes' : 'Create Doctor')}
             </button>
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

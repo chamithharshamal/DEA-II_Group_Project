@@ -61,40 +61,44 @@ export default function PrescriptionList({ refreshStats }) {
 
     return (
         <div>
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 sm:mb-0">Prescription Queue</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+                <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text-primary)' }}>Prescription Queue</h3>
                 
-                <div className="flex flex-col sm:flex-row w-full sm:w-auto space-y-3 sm:space-y-0 sm:space-x-4">
-                    <div className="flex rounded-lg border border-gray-300 overflow-hidden bg-gray-50">
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                    <div className="admin-tabs" style={{ display: 'flex', gap: '4px' }}>
                         <button 
                             onClick={() => setFilter('all')}
-                            className={`px-4 py-2 text-sm font-medium ${filter === 'all' ? 'bg-emerald-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+                            className={`admin-tab ${filter === 'all' ? 'active' : ''}`}
+                            style={{ padding: '6px 16px', fontSize: '0.9rem' }}
                         >
                             All
                         </button>
                         <button 
                             onClick={() => setFilter('pending')}
-                            className={`px-4 py-2 text-sm font-medium border-l border-gray-300 ${filter === 'pending' ? 'bg-yellow-500 text-white border-yellow-500' : 'text-gray-600 hover:bg-gray-100'}`}
+                            className={`admin-tab ${filter === 'pending' ? 'active' : ''}`}
+                            style={{ padding: '6px 16px', fontSize: '0.9rem' }}
                         >
                             Pending
                         </button>
                         <button 
                             onClick={() => setFilter('dispensed')}
-                            className={`px-4 py-2 text-sm font-medium border-l border-gray-300 ${filter === 'dispensed' ? 'bg-blue-600 text-white border-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+                            className={`admin-tab ${filter === 'dispensed' ? 'active' : ''}`}
+                            style={{ padding: '6px 16px', fontSize: '0.9rem' }}
                         >
                             Dispensed
                         </button>
                     </div>
 
-                    <form onSubmit={handleSearch} className="flex relative w-full sm:w-64">
+                    <form onSubmit={handleSearch} style={{ display: 'flex', gap: '8px' }}>
                         <input
                             type="text"
                             placeholder="Patient ID..."
                             value={patientSearch}
                             onChange={(e) => setPatientSearch(e.target.value)}
-                            className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                            className="input-field"
+                            style={{ minWidth: '200px' }}
                         />
-                        <button type="submit" className="absolute right-2 top-2 text-gray-400 hover:text-emerald-600">
+                        <button type="submit" className="btn btn-outline" title="Search">
                             🔍
                         </button>
                     </form>
@@ -102,76 +106,88 @@ export default function PrescriptionList({ refreshStats }) {
             </div>
 
             {loading ? (
-                <div className="p-8 text-center text-gray-500">Loading prescriptions...</div>
+                <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-tertiary)' }}>⏳ Loading prescriptions...</div>
             ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid-2">
                     {prescriptions.map((prescription) => (
                         <div 
                             key={prescription.id} 
-                            className={`bg-white rounded-xl border p-5 shadow-sm transition-shadow hover:shadow-md ${
-                                prescription.dispensed ? 'border-l-4 border-l-blue-500' : 'border-l-4 border-l-yellow-500'
-                            }`}
+                            style={{ 
+                                background: '#fff', 
+                                padding: '24px', 
+                                borderRadius: '12px', 
+                                border: '1px solid var(--border)',
+                                borderLeft: `4px solid ${prescription.dispensed ? 'var(--primary-blue)' : 'var(--warning)'}`,
+                                boxShadow: 'rgba(0, 0, 0, 0.05) 0px 4px 6px -1px'
+                            }}
                         >
-                            <div className="flex justify-between items-start mb-4">
+                            <div className="flex-between" style={{ alignItems: 'flex-start', marginBottom: '16px' }}>
                                 <div>
-                                    <div className="flex items-center space-x-2">
-                                        <h4 className="text-lg font-bold text-gray-900">RX #{prescription.id}</h4>
-                                        <span className={`px-2 py-1 rounded text-xs font-bold ${
-                                            prescription.dispensed ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'
-                                        }`}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                        <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>RX #{prescription.id}</h4>
+                                        <span className={`status ${prescription.dispensed ? 'info' : 'warning'}`}>
                                             {prescription.dispensed ? 'DISPENSED' : 'PENDING'}
                                         </span>
                                     </div>
-                                    <p className="text-sm text-gray-500 mt-1">
+                                    <p className="text-muted text-sm" style={{ margin: 0 }}>
                                         Date: {new Date(prescription.prescribedDate).toLocaleDateString()}
                                     </p>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-sm font-medium bg-gray-100 px-3 py-1 rounded-full text-gray-700 inline-block mb-1">
+                                <div style={{ textAlign: 'right' }}>
+                                    <div style={{ background: 'var(--off-white)', padding: '4px 12px', borderRadius: 'var(--radius-pill)', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
                                         Patient: {prescription.patientId}
                                     </div>
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-muted text-xs font-mono">
                                         Doc: {prescription.doctorId}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-100">
-                                <h5 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Prescribed Medications</h5>
-                                <ul className="space-y-2">
+                            <div style={{ background: 'var(--off-white)', borderRadius: '8px', padding: '16px', marginBottom: '16px', border: '1px solid var(--border)' }}>
+                                <h5 style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    Prescribed Medications
+                                </h5>
+                                <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {prescription.medications && prescription.medications.map((med, idx) => (
-                                        <li key={idx} className="flex justify-between text-sm">
-                                            <span className="font-medium text-gray-800">{med.medicationName || `Medication ID: ${med.id}`}</span>
-                                            <span className="text-gray-600 bg-white px-2 py-0.5 rounded border border-gray-200">Qty: {med.quantity}</span>
+                                        <li key={idx} className="flex-between text-sm">
+                                            <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>
+                                                {med.medicationName || `Medication ID: ${med.id}`}
+                                            </span>
+                                            <span style={{ background: '#fff', padding: '2px 8px', borderRadius: '4px', border: '1px solid var(--border)', color: 'var(--text-tertiary)', fontSize: '0.8rem', fontWeight: 600 }}>
+                                                Qty: {med.quantity}
+                                            </span>
                                         </li>
                                     ))}
                                     {(!prescription.medications || prescription.medications.length === 0) && (
-                                        <li className="text-sm text-gray-500 italic">No medications listed.</li>
+                                        <li className="text-muted text-sm" style={{ fontStyle: 'italic' }}>No medications listed.</li>
                                     )}
                                 </ul>
                             </div>
 
-                            <div className="flex justify-end mt-2">
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
                                 {!prescription.dispensed ? (
                                     <button
                                         onClick={() => handleDispense(prescription.id)}
-                                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center"
+                                        className="btn btn-primary"
+                                        style={{ background: 'var(--success)' }}
                                     >
-                                        <span className="mr-2">✓</span> Dispense Order
+                                        ✓ Dispense Order
                                     </button>
                                 ) : (
                                     <button
                                         disabled
-                                        className="bg-gray-100 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed flex items-center border border-gray-200"
+                                        className="btn btn-outline"
+                                        style={{ opacity: 0.6, cursor: 'not-allowed' }}
                                     >
-                                        <span className="mr-2">🔒</span> Completed
+                                        🔒 Completed
                                     </button>
                                 )}
                             </div>
                         </div>
                     ))}
                     {prescriptions.length === 0 && (
-                        <div className="col-span-full py-12 text-center text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                        <div style={{ gridColumn: '1 / -1', padding: '48px', textAlign: 'center', color: 'var(--text-tertiary)', background: 'var(--off-white)', borderRadius: '12px', border: '2px dashed var(--border)' }}>
+                            <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📋</div>
                             No prescriptions found matching the current criteria.
                         </div>
                     )}

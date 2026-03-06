@@ -28,7 +28,6 @@ export default function BillingForm({ onSuccess }) {
         }));
     };
 
-    // Auto-calculate the total whenever fee inputs change
     useEffect(() => {
         const calculateTotal = async () => {
             setIsCalculating(true);
@@ -47,7 +46,6 @@ export default function BillingForm({ onSuccess }) {
             }
         };
 
-        // Add a small debounce or compute immediately since it's just a quick API call
         const timeoutId = setTimeout(() => {
             calculateTotal();
         }, 300);
@@ -60,7 +58,6 @@ export default function BillingForm({ onSuccess }) {
         setError('');
         setIsSubmitting(true);
 
-        // Basic validation
         if (!formData.patientId || !formData.doctorId) {
             setError('Patient ID and Doctor ID are required.');
             setIsSubmitting(false);
@@ -69,7 +66,7 @@ export default function BillingForm({ onSuccess }) {
 
         try {
             await billingService.createBilling(formData);
-            if (onSuccess) onSuccess(); // Return to list view
+            if (onSuccess) onSuccess(); 
         } catch (err) {
             setError(err.message || 'Failed to create billing record');
         } finally {
@@ -78,127 +75,129 @@ export default function BillingForm({ onSuccess }) {
     };
 
     return (
-        <div className="p-6 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Create New Bill</h2>
+        <div className="card" style={{ marginTop: '20px', maxWidth: '800px' }}>
+            <h2 style={{ marginBottom: '24px' }}>Create New Bill</h2>
 
             {error && (
-                <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
-                    <p className="text-sm text-red-700">{error}</p>
+                <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '12px', borderRadius: '8px', marginBottom: '24px' }}>
+                    {error}
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Patient & Appointment Details</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                
+                {/* Patient / Appointment */}
+                <div>
+                    <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--primary-blue-dark)' }}>Patient & Appointment Details</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Patient ID *</label>
+                            <label>Patient ID *</label>
                             <input
                                 type="text"
                                 name="patientId"
                                 value={formData.patientId}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Doctor ID *</label>
+                            <label>Doctor ID *</label>
                             <input
                                 type="text"
                                 name="doctorId"
                                 value={formData.doctorId}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Appointment ID</label>
+                            <label>Appointment ID</label>
                             <input
                                 type="text"
                                 name="appointmentId"
                                 value={formData.appointmentId}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Fee Breakdown</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Fee Breakdown */}
+                <div style={{ background: 'var(--off-white)', padding: '24px', borderRadius: '12px' }}>
+                    <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--primary-blue-dark)' }}>Fee Breakdown</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Consultation Fee ($)</label>
+                            <label>Consultation Fee ($)</label>
                             <input
                                 type="number"
                                 name="consultationFee"
-                                step="0.01"
-                                min="0"
+                                step="0.01" min="0"
                                 value={formData.consultationFee}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Lab Test Fee ($)</label>
+                            <label>Lab Test Fee ($)</label>
                             <input
                                 type="number"
                                 name="labTestFee"
-                                step="0.01"
-                                min="0"
+                                step="0.01" min="0"
                                 value={formData.labTestFee}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Medication Fee ($)</label>
+                            <label>Medication Fee ($)</label>
                             <input
                                 type="number"
                                 name="medicationFee"
-                                step="0.01"
-                                min="0"
+                                step="0.01" min="0"
                                 value={formData.medicationFee}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Other Fees ($)</label>
+                            <label>Other Fees ($)</label>
                             <input
                                 type="number"
                                 name="otherFee"
-                                step="0.01"
-                                min="0"
+                                step="0.01" min="0"
                                 value={formData.otherFee}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                             />
                         </div>
                     </div>
 
-                    <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end items-center">
-                        <span className="text-gray-500 mr-4">Preview Total:</span>
+                    <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '16px' }}>
+                        <span className="text-muted" style={{ fontWeight: 600 }}>Preview Total:</span>
                         {isCalculating ? (
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-purple-500"></div>
+                            <span className="text-muted">Calculating...</span>
                         ) : (
-                            <span className="text-3xl font-bold text-gray-900">${totalPreview.toFixed(2)}</span>
+                            <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                                ${totalPreview.toFixed(2)}
+                            </span>
                         )}
                     </div>
                 </div>
 
-                <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Payment & Logistics</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Logistics */}
+                <div>
+                    <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--primary-blue-dark)' }}>Payment & Logistics</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                            <label>Payment Method</label>
                             <select
                                 name="paymentMethod"
                                 value={formData.paymentMethod}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+                                className="input-field"
                             >
                                 <option value="CASH">Cash</option>
                                 <option value="CREDIT_CARD">Credit Card</option>
@@ -208,43 +207,42 @@ export default function BillingForm({ onSuccess }) {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                            <label>Due Date</label>
                             <input
                                 type="date"
                                 name="dueDate"
                                 value={formData.dueDate}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                             />
                         </div>
-                        <div className="col-span-1 md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
+                        <div style={{ gridColumn: '1 / -1' }}>
+                            <label>Remarks</label>
                             <textarea
                                 name="remarks"
                                 value={formData.remarks}
                                 onChange={handleChange}
                                 rows="3"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="input-field"
                                 placeholder="Any additional notes..."
+                                style={{ resize: 'vertical' }}
                             ></textarea>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex justify-end space-x-4 pt-4">
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}>
                     <button
                         type="button"
                         onClick={() => { if(onSuccess) onSuccess(); }}
-                        className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                        className="btn btn-secondary"
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`px-6 py-2 rounded-lg text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${
-                            isSubmitting ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
-                        }`}
+                        className="btn btn-primary"
                     >
                         {isSubmitting ? 'Creating...' : 'Create Bill'}
                     </button>

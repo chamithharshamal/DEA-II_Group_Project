@@ -1,93 +1,54 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { labReportService } from '../../services/labReportService';
-import { FiLogOut, FiActivity, FiUser, FiCheckCircle } from 'react-icons/fi';
 import LabReportList from './LabReportList';
 import LabReportForm from './LabReportForm';
 
 const LabDashboard = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pending'); // 'pending', 'completed', 'new'
   const user = labReportService.getCurrentUser();
 
-  const handleLogout = () => {
-    labReportService.logout();
-    navigate('/lab/login');
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <FiActivity className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-semibold text-gray-900">
-                Lab Services Dashboard
-              </span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center text-gray-700">
-                <FiUser className="h-5 w-5 mr-2" />
-                <span className="font-medium">{user?.name || 'Lab Technician'}</span>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <FiLogOut className="mr-2" />
-                Logout
-              </button>
-            </div>
-          </div>
+    <div className="card" style={{ maxWidth: '1200px', margin: '0 auto', minHeight: '80vh' }}>
+      
+      {/* Premium Header */}
+      <div className="flex-between mb-4 mt-2" style={{ borderBottom: '1px solid var(--border)', paddingBottom: '20px' }}>
+        <div className="page-header" style={{ marginBottom: 0 }}>
+          <h1 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
+            🔬 Lab Services
+          </h1>
+          <p>Manage and process patient laboratory testing and reports.</p>
         </div>
-      </nav>
+      </div>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        
-        {/* Navigation Tabs */}
-        <div className="mb-6 flex space-x-4 border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab('pending')}
-            className={`py-2 px-4 border-b-2 font-medium text-sm ${
-              activeTab === 'pending'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
-          >
-            Pending Tests
-          </button>
-          <button
-            onClick={() => setActiveTab('completed')}
-            className={`py-2 px-4 border-b-2 font-medium text-sm ${
-              activeTab === 'completed'
-                ? 'border-green-500 text-green-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
-          >
-            Completed Tests
-          </button>
-          <button
-            onClick={() => setActiveTab('new')}
-            className={`py-2 px-4 border-b-2 font-medium text-sm ${
-              activeTab === 'new'
-                ? 'border-purple-500 text-purple-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
-          >
-            Create New Request
-          </button>
-        </div>
+      {/* Admin Style Tabs */}
+      <div className="admin-tabs" style={{ marginBottom: '24px', display: 'flex', gap: '8px' }}>
+        <button
+          onClick={() => setActiveTab('pending')}
+          className={`admin-tab ${activeTab === 'pending' ? 'active' : ''}`}
+        >
+          Pending Tests
+        </button>
+        <button
+          onClick={() => setActiveTab('completed')}
+          className={`admin-tab ${activeTab === 'completed' ? 'active' : ''}`}
+        >
+          Completed Tests
+        </button>
+        <button
+          onClick={() => setActiveTab('new')}
+          className={`admin-tab ${activeTab === 'new' ? 'active' : ''}`}
+          style={{ marginLeft: 'auto', background: activeTab === 'new' ? 'var(--primary-blue)' : 'var(--off-white)', color: activeTab === 'new' ? '#fff' : 'var(--primary-blue)', fontWeight: 700 }}
+        >
+          + Create Request
+        </button>
+      </div>
 
-        {/* Dynamic Content based on Active Tab */}
-        <div className="bg-white rounded-lg shadow">
-          {activeTab === 'pending' && <LabReportList statusFilter="PENDING" />}
-          {activeTab === 'completed' && <LabReportList statusFilter="COMPLETED" />}
-          {activeTab === 'new' && <LabReportForm onSuccess={() => setActiveTab('pending')} />}
-        </div>
-      </main>
+      {/* Dynamic Content Area */}
+      <div>
+        {activeTab === 'pending' && <LabReportList statusFilter="PENDING" />}
+        {activeTab === 'completed' && <LabReportList statusFilter="COMPLETED" />}
+        {activeTab === 'new' && <LabReportForm onSuccess={() => setActiveTab('pending')} />}
+      </div>
     </div>
   );
 };

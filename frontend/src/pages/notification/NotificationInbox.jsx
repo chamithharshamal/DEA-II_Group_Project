@@ -66,102 +66,113 @@ export default function NotificationInbox() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-6 border-b pb-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">Notification Inbox</h1>
-          <p className="text-gray-500 mt-1">Manage your alerts and messages system-wide.</p>
+    <div className="card" style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div className="flex-between mb-4 mt-2" style={{ borderBottom: '1px solid var(--border)', paddingBottom: '20px' }}>
+        <div className="page-header" style={{ marginBottom: 0 }}>
+          <h1 style={{ margin: 0 }}>Notification Inbox</h1>
+          <p>Manage your alerts and messages system-wide.</p>
         </div>
-        <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg shadow-sm font-semibold">
-          You have {unreadCount} unread messages
+        <div style={{ background: 'var(--primary-blue-light)', color: '#fff', padding: '8px 16px', borderRadius: 'var(--radius-pill)', fontWeight: 600, fontSize: '0.9rem', boxShadow: '0 4px 12px rgba(37,99,235,0.2)' }}>
+          {unreadCount} Unread Message{unreadCount !== 1 ? 's' : ''}
         </div>
       </div>
 
-      <div className="flex gap-4 mb-6">
+      <div className="admin-tabs" style={{ marginBottom: '24px', display: 'flex', gap: '8px', width: '100%' }}>
         <button 
           onClick={() => setFilter('ALL')}
-          className={`px-4 py-2 rounded-md font-medium transition-colors ${filter === 'ALL' ? 'bg-blue-600 text-white shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+          className={`admin-tab ${filter === 'ALL' ? 'active' : ''}`}
         >
           All Messages
         </button>
         <button 
           onClick={() => setFilter('UNREAD')}
-          className={`px-4 py-2 rounded-md font-medium transition-colors ${filter === 'UNREAD' ? 'bg-blue-600 text-white shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+          className={`admin-tab ${filter === 'UNREAD' ? 'active' : ''}`}
         >
           Unread Only
         </button>
         <button 
           onClick={fetchNotifications}
-          className="ml-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md font-medium transition-colors flex items-center gap-2"
+          className="admin-tab"
+          style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}
         >
           ↻ Refresh
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded mb-6">
-          <p className="font-bold">Error</p>
-          <p>{error}</p>
+        <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
+          <strong>Error: </strong> {error}
         </div>
       )}
 
       {loading ? (
-        <div className="flex justify-center items-center h-48">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div style={{ padding: '60px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+          ⏳ Loading notifications...
         </div>
       ) : notifications.length === 0 ? (
-        <div className="bg-gray-50 text-center py-16 rounded-xl border border-gray-100">
-          <div className="text-gray-400 mb-3 text-5xl">📭</div>
-          <h3 className="text-lg font-medium text-gray-900">No notifications found</h3>
-          <p className="text-gray-500 mt-1">You're all caught up!</p>
+        <div style={{ textAlign: 'center', padding: '60px', border: '1px dashed var(--border)', borderRadius: '12px', background: 'var(--off-white)' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📭</div>
+          <h3 style={{ margin: '0 0 8px', color: 'var(--text-primary)' }}>No notifications found</h3>
+          <p className="text-muted" style={{ margin: 0 }}>You're all caught up!</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <ul className="divide-y divide-gray-100">
-            {notifications.map((notif) => (
-              <li 
-                key={notif.notificationId} 
-                className={`p-5 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${notif.status === 'UNREAD' ? 'bg-blue-50/30' : 'bg-white hover:bg-gray-50'}`}
-              >
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-1">
-                    {notif.status === 'UNREAD' && (
-                      <span className="h-2.5 w-2.5 rounded-full bg-blue-600 animate-pulse"></span>
-                    )}
-                    <h3 className={`text-lg ${notif.status === 'UNREAD' ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>
-                      {notif.title || 'Untitled Notification'}
-                    </h3>
-                    <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-md uppercase tracking-wide font-medium"> // notification type, eg SYSTEM/ALERT
-                      {notif.type || 'SYSTEM'}
-                    </span>
-                  </div>
-                  <p className={`text-sm mb-2 ${notif.status === 'UNREAD' ? 'text-gray-700' : 'text-gray-500'}`}>
-                    {notif.message}
-                  </p>
-                  <div className="text-xs text-gray-400 font-mono">
-                    {new Date(notif.createdAt).toLocaleString()} • Recipient ID: {notif.recipientId || 'N/A'}
-                  </div>
-                </div>
-                
-                <div className="flex shrink-0 gap-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {notifications.map((notif) => (
+            <div 
+              key={notif.notificationId} 
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                gap: '16px',
+                padding: '24px',
+                borderRadius: '12px',
+                border: `1px solid ${notif.status === 'UNREAD' ? 'var(--primary-blue-light)' : 'var(--border)'}`,
+                background: notif.status === 'UNREAD' ? 'rgba(37, 99, 235, 0.03)' : '#fff',
+                transition: 'var(--transition)',
+                boxShadow: notif.status === 'UNREAD' ? '0 4px 12px rgba(37, 99, 235, 0.05)' : 'none'
+              }}
+            >
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                   {notif.status === 'UNREAD' && (
-                    <button 
-                      onClick={() => handleMarkAsRead(notif.notificationId)}
-                      className="px-3 py-1.5 text-sm bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 rounded-md font-medium transition"
-                    >
-                      ✓ Mark Read
-                    </button>
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--primary-blue)', display: 'inline-block', flexShrink: 0 }}></span>
                   )}
-                  <button 
-                    onClick={() => handleDelete(notif.notificationId)}
-                    className="px-3 py-1.5 text-sm bg-white border border-red-200 text-red-600 hover:bg-red-50 rounded-md font-medium transition"
-                  >
-                    🗑 Delete
-                  </button>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: notif.status === 'UNREAD' ? 700 : 600, color: notif.status === 'UNREAD' ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
+                    {notif.title || 'Untitled Notification'}
+                  </h3>
+                  <span className={`status ${notif.type === 'ALERT' ? 'danger' : 'info'}`} style={{ fontSize: '0.7rem', padding: '4px 10px' }}>
+                    {notif.type || 'SYSTEM'}
+                  </span>
                 </div>
-              </li>
-            ))}
-          </ul>
+                <p style={{ color: notif.status === 'UNREAD' ? 'var(--text-secondary)' : 'var(--text-tertiary)', marginBottom: '16px', fontSize: '1rem', lineHeight: '1.5' }}>
+                  {notif.message}
+                </p>
+                <div className="text-muted text-sm" style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                  {new Date(notif.createdAt).toLocaleString()} • Recipient ID: {notif.recipientId || 'Global'}
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                {notif.status === 'UNREAD' && (
+                  <button 
+                    onClick={() => handleMarkAsRead(notif.notificationId)}
+                    className="btn btn-sm btn-outline"
+                    title="Mark as Read"
+                  >
+                    ✓ Mark Read
+                  </button>
+                )}
+                <button 
+                  onClick={() => handleDelete(notif.notificationId)}
+                  className="btn btn-sm btn-danger"
+                  title="Delete Notification"
+                >
+                  🗑️ Delete
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

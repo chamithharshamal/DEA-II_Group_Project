@@ -2,6 +2,7 @@
 // Fields match backend AdminDTO: adminId, name, email, password, role
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const ROLES = ['Super Admin', 'Admin', 'Moderator'];
 
@@ -60,7 +61,7 @@ export default function AdminForm({ admin, onSave, onClose, saving }) {
     );
   }
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
@@ -95,6 +96,7 @@ export default function AdminForm({ admin, onSave, onClose, saving }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

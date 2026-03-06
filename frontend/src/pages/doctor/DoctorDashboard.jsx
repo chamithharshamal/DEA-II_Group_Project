@@ -13,41 +13,41 @@ export default function DoctorDashboard({ onLogout }) {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ margin: 0, color: '#0f5550' }}>Doctor Dashboard</h1>
-        <button onClick={handleSignOut} className="btn btn-outline" style={{ borderColor: '#2ec4b6', color: '#2ec4b6' }}>
-          Sign Out
-        </button>
+    <div className="card">
+      <div className="page-header" style={{ marginBottom: '24px' }}>
+        <h1 style={{ margin: 0 }}>Doctor Dashboard</h1>
+        <p>Welcome to your personal dashboard. View appointments, patient reports, and track your daily schedule.</p>
       </div>
 
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px'
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginTop: '32px'
       }}>
-        <div style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #e2f7f4' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#1a6fba', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ background: 'var(--off-white)', borderRadius: '12px', padding: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid var(--border-color)' }}>
+          <h3 style={{ margin: '0 0 16px', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             📅 Today's Appointments
           </h3>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
             You have no upcoming appointments for today.
           </p>
+          <button className="btn btn-primary" style={{ marginTop: '16px' }}>View Schedule</button>
         </div>
 
-        <div style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #e2f7f4' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#1a6fba', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ background: 'var(--off-white)', borderRadius: '12px', padding: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid var(--border-color)' }}>
+          <h3 style={{ margin: '0 0 16px', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             🧪 Recent Lab Reports
           </h3>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
             No new lab reports have been assigned to your patients.
           </p>
+          <button className="btn btn-outline" style={{ marginTop: '16px' }}>View All Reports</button>
         </div>
         
-        <div style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #e2f7f4' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#1a6fba', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ background: 'var(--off-white)', borderRadius: '12px', padding: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid var(--border-color)' }}>
+          <h3 style={{ margin: '0 0 16px', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             🔔 Notifications
           </h3>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-            You're all caught up!
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+            You're all caught up! No active notifications.
           </p>
         </div>
       </div>

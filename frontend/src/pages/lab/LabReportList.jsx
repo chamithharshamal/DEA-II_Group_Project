@@ -29,6 +29,7 @@ const LabReportList = ({ statusFilter }) => {
 
   useEffect(() => {
     fetchReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter]);
 
   const handleUpdateStatus = async (reportId, newStatus) => {
@@ -50,40 +51,30 @@ const LabReportList = ({ statusFilter }) => {
   const testTypes = [...new Set(reports.map(r => r.testType))];
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-48">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-tertiary)' }}>⏳ Loading reports...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-red-600 bg-red-50 rounded-md">{error}</div>;
+    return <div style={{ padding: '16px', color: 'var(--danger)', background: 'var(--danger-bg)', borderRadius: '8px' }}>{error}</div>;
   }
 
   return (
-    <div className="p-6">
+    <>
       {/* Filters and Search */}
-      <div className="mb-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-        <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FiSearch className="h-5 w-5 text-gray-400" />
-          </div>
+      <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: '250px' }}>
           <input
             type="text"
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="input-field"
             placeholder="Search by Patient ID or Report ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FiFilter className="h-5 w-5 text-gray-400" />
-          </div>
+        <div style={{ flex: 1, minWidth: '200px' }}>
           <select
-            className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="input-field"
             value={testTypeFilter}
             onChange={(e) => setTestTypeFilter(e.target.value)}
           >
@@ -96,56 +87,56 @@ const LabReportList = ({ statusFilter }) => {
       </div>
 
       {/* Reports Table */}
-      <div className="overflow-x-auto border border-gray-200 rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="table-container">
+        <table className="data-table">
+          <thead>
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Report ID</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Test Info</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th>Report ID</th>
+              <th>Patient ID</th>
+              <th>Test Info</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th style={{ textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody>
             {filteredReports.length === 0 ? (
               <tr>
-                <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
-                  <FiFileText className="mx-auto h-12 w-12 text-gray-300 mb-3" />
-                  <p>No lab reports found matching your criteria.</p>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '48px', color: 'var(--text-tertiary)' }}>
+                  <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📋</div>
+                  No lab reports found matching your criteria.
                 </td>
               </tr>
             ) : (
               filteredReports.map((report) => (
-                <tr key={report.reportId} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{report.reportId}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.patientId}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900 font-medium">{report.testName}</div>
-                    <div className="text-sm text-gray-500 text-xs">{report.testType}</div>
+                <tr key={report.reportId}>
+                  <td style={{ fontWeight: 600 }}>{report.reportId}</td>
+                  <td className="text-muted">{report.patientId}</td>
+                  <td>
+                    <div>{report.testName}</div>
+                    <div className="text-muted text-xs">{report.testType}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="text-muted text-sm">
                     {new Date(report.reportDate).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      report.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                      report.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                      report.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
+                  <td>
+                    <span className={`status ${
+                      report.status === 'COMPLETED' ? 'success' :
+                      report.status === 'PENDING' ? 'warning' :
+                      report.status === 'IN_PROGRESS' ? 'info' :
+                      'danger'
                     }`}>
                       {report.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                  <td style={{ textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                     {report.status === 'PENDING' && (
                       <button
                         onClick={() => handleUpdateStatus(report.reportId, 'IN_PROGRESS')}
-                        className="text-blue-600 hover:text-blue-900 inline-flex items-center"
+                        className="btn btn-sm btn-outline"
                         title="Mark In Progress"
                       >
-                         <FiCheck className="mr-1"/> Start
+                         <FiCheck style={{ marginRight: '4px' }}/> Start
                       </button>
                     )}
                     {report.status === 'COMPLETED' && (
@@ -153,7 +144,7 @@ const LabReportList = ({ statusFilter }) => {
                         onClick={() => {
                           alert(`Results: ${report.results}\nNormal Range: ${report.normalRange}`);
                         }}
-                        className="text-indigo-600 hover:text-indigo-900"
+                        className="btn btn-sm btn-primary"
                       >
                         View Results
                       </button>
@@ -161,10 +152,10 @@ const LabReportList = ({ statusFilter }) => {
                     {(report.status === 'PENDING' || report.status === 'IN_PROGRESS') && (
                        <button
                        onClick={() => handleUpdateStatus(report.reportId, 'CANCELLED')}
-                       className="text-red-600 hover:text-red-900 inline-flex items-center"
+                       className="btn btn-sm btn-danger"
                        title="Cancel Test"
                      >
-                        <FiX className="mr-1"/> Cancel
+                        <FiX style={{ marginRight: '4px' }}/> Cancel
                      </button>
                     )}
                   </td>
@@ -174,7 +165,7 @@ const LabReportList = ({ statusFilter }) => {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 

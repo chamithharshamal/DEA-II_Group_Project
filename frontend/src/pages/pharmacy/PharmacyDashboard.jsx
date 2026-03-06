@@ -3,7 +3,7 @@ import pharmacyService from '../../services/pharmacyService';
 import MedicationList from './MedicationList';
 import PrescriptionList from './PrescriptionList';
 
-export default function PharmacyDashboard({ setToken }) {
+export default function PharmacyDashboard() {
     const [activeTab, setActiveTab] = useState('medications');
     const [stats, setStats] = useState({
         totalMedications: 0,
@@ -20,9 +20,6 @@ export default function PharmacyDashboard({ setToken }) {
             const medications = await pharmacyService.getMedications();
             const lowStockMeds = await pharmacyService.getLowStock(20);
             
-            // Getting pending prescriptions requires passing patientId currently, or extending the backend.
-            // For now, let's just show total prescriptions as a proxy since we don't have a get all pending route yet without patientId.
-            // Actually, we do have getAllPrescriptions. Let's filter them.
             const allPrescriptions = await pharmacyService.getPrescriptions();
             const pending = allPrescriptions.filter(p => !p.dispensed).length;
 
@@ -36,104 +33,74 @@ export default function PharmacyDashboard({ setToken }) {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('pharmacistToken');
-        setToken(null);
-    };
-
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Navigation Bar */}
-            <nav className="bg-emerald-600 text-white shadow-lg">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex items-center">
-                            <span className="text-2xl mr-2">💊</span>
-                            <span className="font-bold text-xl tracking-tight">Pharmacy Portal</span>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <div className="text-emerald-100 text-sm hidden sm:block">
-                                Pharmacist Session Active
-                            </div>
-                            <button
-                                onClick={handleLogout}
-                                className="bg-emerald-700 hover:bg-emerald-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-emerald-500"
-                            >
-                                Sign Out
-                            </button>
-                        </div>
-                    </div>
+        <div className="card" style={{ maxWidth: '1200px', margin: '0 auto', minHeight: '80vh' }}>
+            {/* Header */}
+            <div className="flex-between mb-4 mt-2" style={{ borderBottom: '1px solid var(--border)', paddingBottom: '20px' }}>
+                <div className="page-header" style={{ marginBottom: 0 }}>
+                    <h1 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        💊 Pharmacy Portal
+                    </h1>
+                    <p>Manage medication inventory and patient prescriptions.</p>
                 </div>
-            </nav>
+            </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
-                        <div className="p-3 rounded-full bg-blue-50 text-blue-600 mr-4">
-                            📦
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Total Medications</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.totalMedications}</p>
-                        </div>
+            {/* Stats Cards */}
+            <div className="grid-3" style={{ marginBottom: '24px' }}>
+                <div style={{ background: 'var(--off-white)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ background: 'var(--primary-blue-light)', color: '#fff', width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+                        📦
                     </div>
-                    
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
-                        <div className="p-3 rounded-full bg-red-50 text-red-600 mr-4">
-                            ⚠️
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Low Stock Alerts</p>
-                            <p className="text-2xl font-bold text-red-600">{stats.lowStock}</p>
-                        </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
-                        <div className="p-3 rounded-full bg-yellow-50 text-yellow-600 mr-4">
-                            📄
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Pending Prescriptions</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.pendingPrescriptions}</p>
-                        </div>
+                    <div>
+                        <div className="text-muted text-sm" style={{ fontWeight: 600 }}>Total Medications</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.totalMedications}</div>
                     </div>
                 </div>
 
-                {/* Tabs */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-                    <div className="flex border-b border-gray-200">
-                        <button
-                            onClick={() => setActiveTab('medications')}
-                            className={`flex-1 py-4 px-6 text-center font-medium text-sm focus:outline-none transition-colors ${
-                                activeTab === 'medications' 
-                                    ? 'border-b-2 border-emerald-500 text-emerald-600 bg-emerald-50/50' 
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                            }`}
-                        >
-                            Medication Inventory
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('prescriptions')}
-                            className={`flex-1 py-4 px-6 text-center font-medium text-sm focus:outline-none transition-colors ${
-                                activeTab === 'prescriptions' 
-                                    ? 'border-b-2 border-emerald-500 text-emerald-600 bg-emerald-50/50' 
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                            }`}
-                        >
-                            Prescriptions
-                        </button>
+                <div style={{ background: 'var(--off-white)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ background: 'var(--danger)', color: '#fff', width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+                        ⚠️
+                    </div>
+                    <div>
+                        <div className="text-muted text-sm" style={{ fontWeight: 600 }}>Low Stock Alerts</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--danger)' }}>{stats.lowStock}</div>
                     </div>
                 </div>
 
-                {/* Content Area */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[500px]">
-                    {activeTab === 'medications' ? (
-                        <MedicationList refreshStats={loadStats} />
-                    ) : (
-                        <PrescriptionList refreshStats={loadStats} />
-                    )}
+                <div style={{ background: 'var(--off-white)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ background: 'var(--warning)', color: '#fff', width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+                        📄
+                    </div>
+                    <div>
+                        <div className="text-muted text-sm" style={{ fontWeight: 600 }}>Pending Prescriptions</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.pendingPrescriptions}</div>
+                    </div>
                 </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="admin-tabs" style={{ marginBottom: '24px', display: 'flex', gap: '8px' }}>
+                <button
+                    onClick={() => setActiveTab('medications')}
+                    className={`admin-tab ${activeTab === 'medications' ? 'active' : ''}`}
+                >
+                    Medication Inventory
+                </button>
+                <button
+                    onClick={() => setActiveTab('prescriptions')}
+                    className={`admin-tab ${activeTab === 'prescriptions' ? 'active' : ''}`}
+                >
+                    Prescriptions
+                </button>
+            </div>
+
+            {/* Content Area */}
+            <div>
+                {activeTab === 'medications' ? (
+                    <MedicationList refreshStats={loadStats} />
+                ) : (
+                    <PrescriptionList refreshStats={loadStats} />
+                )}
             </div>
         </div>
     );

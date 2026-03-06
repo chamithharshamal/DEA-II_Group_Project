@@ -46,110 +46,81 @@ export default function BillingDashboard() {
 
     useEffect(() => {
         loadStats();
-    }, [activeTab]); // Reload stats when switching tabs (i.e. returning to list after create)
+    }, [activeTab]);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
-            {/* Navigation */}
-            <nav className="bg-white shadow-sm border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16 items-center">
-                        <div className="flex items-center">
-                            <h1 className="text-xl font-bold text-gray-900 border-l-4 border-purple-500 pl-3">
-                                Billing Module
-                            </h1>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+        <div>
+            <div className="page-header">
+                <h1>Billing & Invoices</h1>
+                <p>Manage patient bills, track payments, and generate new invoices.</p>
+            </div>
 
-            {/* Main Content */}
-            <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-                {/* Stats Section */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center space-x-4">
-                        <div className="p-3 bg-purple-50 rounded-lg">
-                            <span className="text-2xl">ð°</span>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Total Revenue</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                                {isLoading ? '-' : `$${stats.totalRevenue.toFixed(2)}`}
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center space-x-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                            <span className="text-2xl">ð§¾</span>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Total Bills</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                                {isLoading ? '-' : stats.totalBills}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center space-x-4">
-                        <div className="p-3 bg-red-50 rounded-lg">
-                            <span className="text-2xl">â³</span>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Pending</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                                {isLoading ? '-' : stats.pendingBills}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center space-x-4">
-                        <div className="p-3 bg-green-50 rounded-lg">
-                            <span className="text-2xl">â</span>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Paid Bills</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                                {isLoading ? '-' : stats.paidBills}
-                            </p>
+            {/* Stats Dashboard */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+                <div className="card" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ fontSize: '2.5rem', background: 'var(--success-bg)', padding: '12px', borderRadius: '16px' }}>💰</div>
+                    <div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase' }}>Total Revenue</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                            {isLoading ? '...' : `$${stats.totalRevenue.toFixed(2)}`}
                         </div>
                     </div>
                 </div>
 
-                {/* Tabs */}
-                <div className="border-b border-gray-200 mb-6 bg-white rounded-t-xl px-4 pt-4 shadow-sm">
-                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-                        <button
-                            onClick={() => setActiveTab('list')}
-                            className={`${
-                                activeTab === 'list'
-                                    ? 'border-purple-500 text-purple-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
-                        >
-                            All Billings
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('create')}
-                            className={`${
-                                activeTab === 'create'
-                                    ? 'border-purple-500 text-purple-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
-                        >
-                            Create New Bill
-                        </button>
-                    </nav>
+                <div className="card" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ fontSize: '2.5rem', background: 'var(--blue-lt)', padding: '12px', borderRadius: '16px' }}>🧾</div>
+                    <div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase' }}>Total Bills</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                            {isLoading ? '...' : stats.totalBills}
+                        </div>
+                    </div>
                 </div>
 
-                {/* Tab Content */}
-                <div className="bg-white rounded-b-xl rounded-tr-xl shadow-sm border border-gray-100 min-h-[500px]">
-                    {activeTab === 'list' ? (
-                        <BillingList />
-                    ) : (
-                        <BillingForm onSuccess={() => setActiveTab('list')} />
-                    )}
+                <div className="card" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ fontSize: '2.5rem', background: 'var(--warning-bg)', padding: '12px', borderRadius: '16px' }}>⏳</div>
+                    <div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase' }}>Pending Bills</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                            {isLoading ? '...' : stats.pendingBills}
+                        </div>
+                    </div>
                 </div>
+
+                <div className="card" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ fontSize: '2.5rem', background: 'var(--off-white)', padding: '12px', borderRadius: '16px' }}>✅</div>
+                    <div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase' }}>Paid Bills</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                            {isLoading ? '...' : stats.paidBills}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="admin-tabs">
+                <button 
+                    className={`admin-tab ${activeTab === 'list' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('list')}
+                >
+                    All Billings
+                </button>
+                <button 
+                    className={`admin-tab ${activeTab === 'create' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('create')}
+                >
+                    Create New Bill
+                </button>
+            </div>
+
+            {/* Content Area */}
+            <div>
+                {activeTab === 'list' ? (
+                    <BillingList />
+                ) : (
+                    <BillingForm onSuccess={() => setActiveTab('list')} />
+                )}
             </div>
         </div>
     );

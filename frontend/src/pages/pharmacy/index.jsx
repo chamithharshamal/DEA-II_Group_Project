@@ -1,22 +1,15 @@
-import { useState, useEffect } from 'react';
-import PharmacyLogin from './PharmacyLogin';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import PharmacyDashboard from './PharmacyDashboard';
 
 export default function PharmacyRoutes() {
-  const [token, setToken] = useState(localStorage.getItem('pharmacistToken'));
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setToken(localStorage.getItem('pharmacistToken'));
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  if (!token) {
-    return <PharmacyLogin setToken={setToken} />;
-  }
-
-  return <PharmacyDashboard setToken={setToken} />;
+  // Authentication is already handled by the global PrivateRoute in App.jsx.
+  // Both 'admin' and 'pharmacist' roles are permitted to access this module.
+  
+  return (
+    <Routes>
+      <Route path="/dashboard" element={<PharmacyDashboard />} />
+      <Route path="/" element={<Navigate to="dashboard" replace />} />
+    </Routes>
+  );
 }

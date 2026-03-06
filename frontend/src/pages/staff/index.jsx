@@ -36,8 +36,8 @@ export default function StaffRoutes() {
       {tab === 'shifts' && (
         <div style={{ padding: 48, textAlign: 'center', background: '#f8fafc', borderRadius: 12, border: '2px dashed #e2e8f0' }}>
           <div style={{ fontSize: '3rem', marginBottom: 16 }}>🗓️</div>
-          <h3 style={{ fontWeight: 600, color: 'var(--color-text)' }}>Shift Schedule Coming Soon</h3>
-          <p style={{ color: 'var(--color-muted)', maxWidth: 400, margin: '0 auto' }}>
+          <h3 style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Shift Schedule Coming Soon</h3>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: 400, margin: '0 auto' }}>
             We're building a powerful shift management system. You'll soon be able to assign and track staff working hours here.
           </p>
         </div>

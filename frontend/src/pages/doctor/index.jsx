@@ -1,25 +1,25 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DoctorList      from './DoctorList';
-import DoctorLogin     from './DoctorLogin';
 import DoctorDashboard from './DoctorDashboard';
 
 export default function DoctorRoutes() {
-  // Determine user context based on tokens
-  const [isDoctor, setIsDoctor] = useState(() => Boolean(localStorage.getItem('doctorToken')));
-  const [isAdmin, setIsAdmin]   = useState(() => Boolean(localStorage.getItem('adminToken')));
+  const navigate = useNavigate();
+  // Determine user context based on activeRole
+  const role = localStorage.getItem('activeRole');
+  const [isDoctor, setIsDoctor] = useState(role === 'doctor');
+  const [isAdmin, setIsAdmin]   = useState(role === 'admin');
 
   // Listen for changes across the app just in case
   useEffect(() => {
-    setIsDoctor(Boolean(localStorage.getItem('doctorToken')));
-    setIsAdmin(Boolean(localStorage.getItem('adminToken')));
+    const currentRole = localStorage.getItem('activeRole');
+    setIsDoctor(currentRole === 'doctor');
+    setIsAdmin(currentRole === 'admin');
   }, []);
 
-  function handleDoctorLogin() {
-    setIsDoctor(true);
-  }
-
   function handleDoctorLogout() {
-    setIsDoctor(false);
+    localStorage.clear();
+    navigate('/login');
   }
 
   // 1. If user is an Admin, they should see the Doctor Management interface (DoctorList)
@@ -42,8 +42,6 @@ export default function DoctorRoutes() {
     );
   }
 
-  // 3. Otherwise, show the Doctor Login Screen
-  return (
-    <DoctorLogin onSuccess={handleDoctorLogin} />
-  );
+  // 3. Otherwise, return null because App.jsx PrivateRoute will handle redirect
+  return null;
 }

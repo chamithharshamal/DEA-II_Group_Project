@@ -3,6 +3,7 @@
 // phone, address, dateOfBirth, gender, bloodGroup
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const GENDERS = ['Male', 'Female', 'Other'];
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
@@ -85,7 +86,7 @@ export default function PatientForm({ patient, onSave, onClose, saving }) {
         );
     }
 
-    return (
+    return createPortal(
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal" style={{ maxWidth: 560 }} onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
@@ -126,6 +127,7 @@ export default function PatientForm({ patient, onSave, onClose, saving }) {
                     </div>
                 </form>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
