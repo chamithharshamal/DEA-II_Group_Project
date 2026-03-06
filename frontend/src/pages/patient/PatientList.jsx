@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import PatientForm from './PatientForm';
-import { createPortal } from 'react-dom';
+import ConfirmModal from '../../components/ConfirmModal';
 import * as patientService from '../../services/patientService';
 
 const GENDER_BADGE = { Male: 'info', Female: 'success', Other: 'warning' };
@@ -95,7 +95,7 @@ export default function PatientList() {
                         placeholder="Search patients…"
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        style={{ width: '250px', padding: '10px 14px', marginBottom: 0 }}
+                        style={{ width: '250px' }}
                     />
                     <div className="text-muted text-sm ml-2">
                         <b>{patients.length}</b> Patients ({patients.filter(p => p.gender === 'Female').length} Female | {patients.filter(p => p.gender === 'Male').length} Male)
@@ -146,10 +146,10 @@ export default function PatientList() {
                                     <td style={{ fontWeight: 600 }}>{p.firstName} {p.lastName}</td>
                                     <td className="text-muted">{p.email}</td>
                                     <td className="text-muted">{p.phone}</td>
-                                    <td>
-                                        <span className={`status ${GENDER_BADGE[p.gender] || 'info'}`}>{p.gender}</span>
+                                    <td style={{ fontWeight: 700, color: '#111827' }}>
+                                        {typeof p.gender === 'string' ? p.gender.toUpperCase() : p.gender}
                                     </td>
-                                    <td><span className="status danger">{p.bloodGroup}</span></td>
+                                    <td style={{ fontWeight: 700, color: '#111827' }}>{p.bloodGroup}</td>
                                     <td className="text-muted text-xs">{p.patientId}</td>
                                     <td style={{ textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                                         <button className="btn btn-sm btn-outline" title="Edit" onClick={() => setEditing(p)}>
@@ -177,23 +177,14 @@ export default function PatientList() {
             )}
 
             {/* Delete Confirm Modal */}
-            {deleting && createPortal(
-                <div className="modal-overlay" onClick={() => setDeleting(null)}>
-                    <div className="modal" style={{ maxWidth: 380 }} onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Delete Patient</h2>
-                            <button className="modal-close" onClick={() => setDeleting(null)}>×</button>
-                        </div>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                            Are you sure you want to delete this patient? This action cannot be undone.
-                        </p>
-                        <div className="modal-footer" style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                            <button className="btn btn-secondary" onClick={() => setDeleting(null)}>Cancel</button>
-                            <button className="btn btn-danger" onClick={() => handleDelete(deleting)}>Delete</button>
-                        </div>
-                    </div>
-                </div>,
-                document.body
+            {deleting && (
+                <ConfirmModal
+                    title="Delete Patient"
+                    message="Are you sure you want to delete this patient? This action cannot be undone and will remove all associated records."
+                    onConfirm={() => handleDelete(deleting)}
+                    onCancel={() => setDeleting(null)}
+                    confirmText="Delete Patient"
+                />
             )}
         </div>
     );

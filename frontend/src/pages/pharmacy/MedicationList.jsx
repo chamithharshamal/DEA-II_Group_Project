@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import ConfirmModal from '../../components/ConfirmModal';
 import pharmacyService from '../../services/pharmacyService';
 
 export default function MedicationList({ refreshStats }) {
@@ -9,6 +10,7 @@ export default function MedicationList({ refreshStats }) {
     const [editingMedication, setEditingMedication] = useState(null);
     const [formData, setFormData] = useState({ name: '', description: '', stock: 0, price: 0 });
     const [searchTerm, setSearchTerm] = useState('');
+    const [deletingId, setDeletingId] = useState(null);
 
     useEffect(() => {
         loadMedications();
@@ -85,14 +87,13 @@ export default function MedicationList({ refreshStats }) {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this medication?")) {
-            try {
-                await pharmacyService.deleteMedication(id);
-                await loadMedications();
-            } catch (error) {
-                console.error("Failed to delete", error);
-                alert("Error deleting medication.");
-            }
+        try {
+            await pharmacyService.deleteMedication(id);
+            setDeletingId(null);
+            await loadMedications();
+        } catch (error) {
+            console.error("Failed to delete", error);
+            alert("Error deleting medication.");
         }
     };
 
@@ -185,10 +186,10 @@ export default function MedicationList({ refreshStats }) {
                                         ✏️ Edit
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(med.id)}
+                                        onClick={() => setDeletingId(med.id)}
                                         className="btn btn-sm btn-danger"
                                     >
-                                        🗑️ Delete
+                                        🗑️
                                     </button>
                                 </td>
                             </tr>
@@ -208,15 +209,15 @@ export default function MedicationList({ refreshStats }) {
             {/* Form Modal */}
             {isModalOpen && createPortal(
                 <div className="modal-overlay" onClick={handleCloseModal}>
-                    <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+                    <form onSubmit={handleSubmit} className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
                         <div className="modal-header">
                             <h2 style={{ fontSize: '1.25rem', margin: 0 }}>
                                 {editingMedication ? '✏️ Edit Medication' : '+ Add New Medication'}
                             </h2>
-                            <button onClick={handleCloseModal} className="modal-close">✖</button>
+                            <button type="button" onClick={handleCloseModal} className="modal-close">✖</button>
                         </div>
                         
-                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div className="modal-body">
                             <div className="form-group">
                                 <label>Name *</label>
                                 <input
@@ -224,7 +225,8 @@ export default function MedicationList({ refreshStats }) {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="input-field"
+                                    className="form-control"
+                                    placeholder="Enter medication name"
                                     required
                                 />
                             </div>
@@ -236,8 +238,8 @@ export default function MedicationList({ refreshStats }) {
                                     value={formData.description}
                                     onChange={handleChange}
                                     rows="3"
-                                    style={{ resize: 'vertical' }}
-                                    className="input-field"
+                                    className="form-control"
+                                    placeholder="Enter medication description"
                                     required
                                 />
                             </div>
@@ -251,7 +253,7 @@ export default function MedicationList({ refreshStats }) {
                                         name="price"
                                         value={formData.price}
                                         onChange={handleChange}
-                                        className="input-field"
+                                        className="form-control"
                                         required
                                         min="0"
                                     />
@@ -263,32 +265,42 @@ export default function MedicationList({ refreshStats }) {
                                         name="stock"
                                         value={formData.stock}
                                         onChange={handleChange}
-                                        className="input-field"
+                                        className="form-control"
                                         required
                                         min="0"
                                     />
                                 </div>
                             </div>
-                            
-                            <div className="modal-footer" style={{ marginTop: '24px' }}>
-                                <button
-                                    type="button"
-                                    onClick={handleCloseModal}
-                                    className="btn btn-outline"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                >
-                                    {editingMedication ? 'Save Changes' : 'Add Medication'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        
+                        <div className="modal-footer">
+                            <button
+                                type="button"
+                                onClick={handleCloseModal}
+                                className="btn btn-outline"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                            >
+                                {editingMedication ? 'Save Changes' : 'Add Medication'}
+                            </button>
+                        </div>
+                    </form>
                 </div>,
                 document.body
+            )}
+
+            {deletingId && (
+                <ConfirmModal 
+                    title="Delete Medication"
+                    message="Are you sure you want to remove this medication from the inventory? This action cannot be undone."
+                    onConfirm={() => handleDelete(deletingId)}
+                    onCancel={() => setDeletingId(null)}
+                    confirmText="Delete Medication"
+                />
             )}
         </div>
     );

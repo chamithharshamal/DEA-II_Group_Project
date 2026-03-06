@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAppointmentsByPatient, getAppointmentsByDoctor } from '../../services/appointmentService';
+import { getAllAppointments, getAppointmentsByPatient, getAppointmentsByDoctor } from '../../services/appointmentService';
 
 const AppointmentList = () => {
     const [appointments, setAppointments] = useState([]);
+    const [allAppointments, setAllAppointments] = useState([]);
     const [searchId, setSearchId] = useState('');
     const [searchType, setSearchType] = useState('patient');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        fetchAppointments();
+    }, []);
+
+    const fetchAppointments = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const data = await getAllAppointments();
+            setAppointments(data);
+            setAllAppointments(data);
+        } catch (err) {
+            setError(err.code === 'ERR_NETWORK' ? 'Cannot reach the appointment service.' : 'Failed to fetch appointments.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSearch = async (e) => {
         e.preventDefault();
-        if (!searchId) return;
+        if (!searchId) {
+            setAppointments(allAppointments);
+            return;
+        }
         setLoading(true);
         setError('');
         try {
@@ -26,6 +48,12 @@ const AppointmentList = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const clearSearch = () => {
+        setSearchId('');
+        setAppointments(allAppointments);
+        setError('');
     };
 
     return (
@@ -54,6 +82,15 @@ const AppointmentList = () => {
                 >
                     Find
                 </button>
+                {searchId && (
+                    <button
+                        type="button"
+                        onClick={clearSearch}
+                        style={{ padding: '8px 15px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                    >
+                        Clear
+                    </button>
+                )}
             </form>
 
             {loading && <p>Loading appointments...</p>}
@@ -103,8 +140,8 @@ const AppointmentList = () => {
                 </table>
             )}
 
-            {!loading && appointments.length === 0 && searchId && !error && (
-                <p>No appointments found for the given ID.</p>
+            {!loading && appointments.length === 0 && (
+                <p>No appointments found.</p>
             )}
         </div>
     );

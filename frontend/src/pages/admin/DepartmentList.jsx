@@ -1,6 +1,5 @@
-// ─── Department List ─────────────────────────────────────────────────────────
 import { useState, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import ConfirmModal from '../../components/ConfirmModal';
 import * as adminService from '../../services/adminService';
 
 const EMPTY_FORM = { departmentName: '', description: '' };
@@ -102,7 +101,7 @@ export default function DepartmentList() {
             placeholder="Search departments…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{ width: '250px', padding: '10px 14px', marginBottom: 0 }}
+            style={{ width: '250px' }}
           />
         </div>
         
@@ -163,64 +162,56 @@ export default function DepartmentList() {
       )}
 
       {/* Add / Edit Modal */}
-      {modal !== null && createPortal(
+      {modal !== null && (
         <div className="modal-overlay" onClick={() => setModal(null)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
+          <form onSubmit={handleSave} className="modal" style={{ maxWidth: 450 }} onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{modal === 'new' ? '+ Add Department' : '✏️ Edit Department'}</h2>
-              <button className="modal-close" onClick={() => setModal(null)}>×</button>
+              <button type="button" className="modal-close" onClick={() => setModal(null)}>×</button>
             </div>
-            <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
+            
+            <div className="modal-body">
+              <div className="form-group">
                 <label>Department Name *</label>
                 <input
-                  className="input-field" required
+                  className="form-control" 
+                  required
                   placeholder="e.g. Cardiology"
                   value={form.departmentName}
                   onChange={e => setForm(f => ({ ...f, departmentName: e.target.value }))}
                 />
               </div>
-              <div>
+              <div className="form-group">
                 <label>Description</label>
                 <textarea
-                  className="input-field"
+                  className="form-control"
                   rows={3}
                   placeholder="Brief description of this department"
-                  style={{ resize: 'vertical' }}
                   value={form.description}
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 />
               </div>
-              <div className="modal-footer" style={{ marginTop: '16px', display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setModal(null)}>Cancel</button>
-                <button type="submit" className="btn btn-primary" disabled={saving}>
-                  {saving ? 'Saving…' : (modal === 'new' ? 'Create' : 'Save Changes')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>,
-        document.body
+            </div>
+
+            <div className="modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => setModal(null)}>Cancel</button>
+              <button type="submit" className="btn btn-primary" disabled={saving}>
+                {saving ? 'Saving…' : (modal === 'new' ? 'Create Department' : 'Save Changes')}
+              </button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Delete Confirm */}
-      {deleting && createPortal(
-        <div className="modal-overlay" onClick={() => setDeleting(null)}>
-          <div className="modal" style={{ maxWidth: 380 }} onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Delete Department</h2>
-              <button className="modal-close" onClick={() => setDeleting(null)}>×</button>
-            </div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-              Are you sure you want to delete this department? All associated data may be affected.
-            </p>
-            <div className="modal-footer" style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button className="btn btn-secondary" onClick={() => setDeleting(null)}>Cancel</button>
-              <button className="btn btn-danger" onClick={() => handleDelete(deleting)}>Delete</button>
-            </div>
-          </div>
-        </div>,
-        document.body
+      {deleting && (
+        <ConfirmModal 
+          title="Delete Department"
+          message="Are you sure you want to delete this department? This might affect staff assignments and patient records associated with this unit."
+          onConfirm={() => handleDelete(deleting)}
+          onCancel={() => setDeleting(null)}
+          confirmText="Delete Department"
+        />
       )}
     </>
   );

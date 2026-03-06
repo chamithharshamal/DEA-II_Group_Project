@@ -64,7 +64,7 @@ export default function PatientForm({ patient, onSave, onClose, saving }) {
                 {opts.options ? (
                     <select
                         className="form-control"
-                        style={errors[key] ? { borderColor: 'var(--color-danger)' } : {}}
+                        style={errors[key] ? { borderColor: 'var(--danger)' } : {}}
                         value={form[key]}
                         onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
                     >
@@ -88,13 +88,13 @@ export default function PatientForm({ patient, onSave, onClose, saving }) {
 
     return createPortal(
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal" style={{ maxWidth: 560 }} onClick={e => e.stopPropagation()}>
+            <form onSubmit={handleSubmit} className="modal" style={{ maxWidth: 560 }} onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2>{isEdit ? '✏️ Edit Patient' : '+ Add Patient'}</h2>
-                    <button className="modal-close" onClick={onClose}>×</button>
+                    <button type="button" className="modal-close" onClick={onClose}>×</button>
                 </div>
 
-                <form onSubmit={handleSubmit}>
+                <div className="modal-body">
                     <div className="grid-2">
                         {field('firstName', 'First Name', 'text', { placeholder: 'John' })}
                         {field('lastName', 'Last Name', 'text', { placeholder: 'Doe' })}
@@ -109,8 +109,26 @@ export default function PatientForm({ patient, onSave, onClose, saving }) {
 
                     <div className="grid-3">
                         {field('dateOfBirth', 'Date of Birth', 'date')}
-                        {field('gender', 'Gender', 'text', { options: GENDERS })}
-                        {field('bloodGroup', 'Blood Group', 'text', { options: BLOOD_GROUPS })}
+                        <div className="form-group">
+                            <label>Gender</label>
+                            <select 
+                                className="form-control" 
+                                value={form.gender} 
+                                onChange={e => setForm(f => ({ ...f, gender: e.target.value }))}
+                            >
+                                {GENDERS.map(g => <option key={g} value={g}>{g}</option>)}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Blood Group</label>
+                            <select 
+                                className="form-control" 
+                                value={form.bloodGroup} 
+                                onChange={e => setForm(f => ({ ...f, bloodGroup: e.target.value }))}
+                            >
+                                {BLOOD_GROUPS.map(b => <option key={b} value={b}>{b}</option>)}
+                            </select>
+                        </div>
                     </div>
 
                     {field('password',
@@ -118,15 +136,15 @@ export default function PatientForm({ patient, onSave, onClose, saving }) {
                         'password',
                         { autoComplete: 'new-password', placeholder: '••••••••' }
                     )}
+                </div>
 
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="btn btn-primary" disabled={saving}>
-                            {saving ? 'Saving…' : (isEdit ? 'Save Changes' : 'Create Patient')}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
+                    <button type="submit" className="btn btn-primary" disabled={saving}>
+                        {saving ? 'Saving…' : (isEdit ? 'Save Changes' : 'Create Patient')}
+                    </button>
+                </div>
+            </form>
         </div>,
         document.body
     );

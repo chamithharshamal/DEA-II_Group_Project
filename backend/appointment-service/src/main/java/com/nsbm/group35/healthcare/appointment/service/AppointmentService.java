@@ -60,6 +60,12 @@ public class AppointmentService {
         return toDTO(appointment);
     }
 
+    public List<AppointmentDTO> getAllAppointments() {
+        return appointmentRepository.findAll().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<AppointmentDTO> getByPatient(String patientId) {
         return appointmentRepository.findByPatientId(patientId).stream()
                 .map(this::toDTO)

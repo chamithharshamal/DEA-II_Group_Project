@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import ConfirmModal from '../../components/ConfirmModal';
 import DoctorForm from './DoctorForm';
 import * as doctorService from '../../services/doctorService';
 
@@ -90,7 +90,7 @@ export default function DoctorList() {
             placeholder="Search doctors…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{ width: '250px', padding: '10px 14px', marginBottom: 0 }}
+            style={{ width: '250px' }}
           />
           <div className="text-muted text-sm ml-2">
             <b>{doctors.length}</b> Doctors Total
@@ -138,7 +138,7 @@ export default function DoctorList() {
                 <tr key={d.doctorId || i}>
                   <td className="text-muted text-xs">{i + 1}</td>
                   <td style={{ fontWeight: 600 }}>Dr. {d.firstName} {d.lastName}</td>
-                  <td><span className="status warning">{d.specialization}</span></td>
+                  <td style={{ fontWeight: 700, color: '#111827' }}>{typeof d.specialization === 'string' ? d.specialization.toUpperCase() : d.specialization}</td>
                   <td className="text-muted">{d.email}</td>
                   <td className="text-muted">{d.phone}</td>
                   <td>{d.experienceYears} yrs</td>
@@ -168,23 +168,14 @@ export default function DoctorList() {
       )}
 
       {/* Delete Confirm Modal */}
-      {deleting && createPortal(
-        <div className="modal-overlay" onClick={() => setDeleting(null)}>
-          <div className="modal" style={{ maxWidth: 380 }} onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Delete Doctor</h2>
-              <button className="modal-close" onClick={() => setDeleting(null)}>×</button>
-            </div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-              Are you sure you want to delete this doctor? This action cannot be undone.
-            </p>
-            <div className="modal-footer" style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button className="btn btn-secondary" onClick={() => setDeleting(null)}>Cancel</button>
-              <button className="btn btn-danger" onClick={() => handleDelete(deleting)}>Delete</button>
-            </div>
-          </div>
-        </div>,
-        document.body
+      {deleting && (
+        <ConfirmModal 
+          title="Delete Doctor"
+          message="Are you sure you want to delete this doctor's profile? This will not affect existing medical records but will prevent further assignments."
+          onConfirm={() => handleDelete(deleting)}
+          onCancel={() => setDeleting(null)}
+          confirmText="Delete Doctor"
+        />
       )}
     </div>
   );

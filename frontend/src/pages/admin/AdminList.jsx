@@ -1,6 +1,5 @@
-// ─── Admin List ──────────────────────────────────────────────────
 import { useState, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import ConfirmModal from '../../components/ConfirmModal';
 import AdminForm from './AdminForm';
 import * as adminService from '../../services/adminService';
 
@@ -8,13 +7,13 @@ import * as adminService from '../../services/adminService';
 const ROLE_BADGE = { 'Super Admin': 'danger', Admin: 'info', Moderator: 'warning' };
 
 export default function AdminList() {
-  const [admins,   setAdmins]   = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [error,    setError]    = useState(null);
-  const [search,   setSearch]   = useState('');
-  const [editing,  setEditing]  = useState(null);   // null | 'new' | admin obj
-  const [deleting, setDeleting] = useState(null);   // admin id
-  const [saving,   setSaving]   = useState(false);
+    const [admins,   setAdmins]   = useState([]);
+    const [loading,  setLoading]  = useState(true);
+    const [error,    setError]    = useState(null);
+    const [search,   setSearch]   = useState('');
+    const [editing,  setEditing]  = useState(null);   // null | 'new' | admin obj
+    const [deleting, setDeleting] = useState(null);   // admin id
+    const [saving,   setSaving]   = useState(false);
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
   const fetchAdmins = useCallback(async () => {
@@ -89,7 +88,7 @@ export default function AdminList() {
             placeholder="Search admins…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{ width: '250px', padding: '10px 14px', marginBottom: 0 }}
+            style={{ width: '250px' }}
           />
           <div className="text-muted text-sm ml-2">
             <b>{admins.length}</b> Admins ({admins.filter(a => a.role !== 'Inactive').length} Active)
@@ -138,8 +137,8 @@ export default function AdminList() {
                   <td style={{ fontWeight: 600 }}>{a.name}</td>
                   <td className="text-muted">{a.email}</td>
                   <td>
-                    <span className={`status ${ROLE_BADGE[a.role] || 'info'}`}>
-                      {a.role}
+                    <span style={{ fontWeight: 700, color: '#111827' }}>
+                      {typeof a.role === 'string' ? a.role.toUpperCase() : a.role}
                     </span>
                   </td>
                   <td className="text-muted text-xs">{a.adminId}</td>
@@ -169,23 +168,14 @@ export default function AdminList() {
       )}
 
       {/* Delete Confirm Modal */}
-      {deleting && createPortal(
-        <div className="modal-overlay" onClick={() => setDeleting(null)}>
-          <div className="modal" style={{ maxWidth: 380 }} onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Delete Admin</h2>
-              <button className="modal-close" onClick={() => setDeleting(null)}>×</button>
-            </div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-              Are you sure you want to delete this admin? This action cannot be undone.
-            </p>
-            <div className="modal-footer" style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button className="btn btn-secondary" onClick={() => setDeleting(null)}>Cancel</button>
-              <button className="btn btn-danger" onClick={() => handleDelete(deleting)}>Delete</button>
-            </div>
-          </div>
-        </div>,
-        document.body
+      {deleting && (
+        <ConfirmModal 
+          title="Delete Administrator"
+          message="Are you sure you want to delete this administrator account? This action is permanent and will be logged."
+          onConfirm={() => handleDelete(deleting)}
+          onCancel={() => setDeleting(null)}
+          confirmText="Delete Admin"
+        />
       )}
     </>
   );

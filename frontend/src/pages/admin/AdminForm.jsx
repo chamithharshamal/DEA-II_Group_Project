@@ -49,27 +49,27 @@ export default function AdminForm({ admin, onSave, onClose, saving }) {
         <label>{label}</label>
         <input
           className="form-control"
-          style={errors[key] ? { borderColor: 'var(--color-danger)' } : {}}
+          style={errors[key] ? { borderColor: 'var(--danger)' } : {}}
           type={type}
           value={form[key]}
           placeholder={opts.placeholder}
           onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
           autoComplete={opts.autoComplete}
         />
-        {errors[key] && <span style={{ color: 'var(--color-danger)', fontSize: '0.75rem' }}>{errors[key]}</span>}
+        {errors[key] && <span style={{ color: 'var(--danger)', fontSize: '0.75rem' }}>{errors[key]}</span>}
       </div>
     );
   }
 
   return createPortal(
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
+      <form onSubmit={handleSubmit} className="modal" style={{ maxWidth: 500 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{isEdit ? '✏️ Edit Admin' : '+ Add Admin'}</h2>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button type="button" className="modal-close" onClick={onClose}>×</button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <div className="modal-body">
           <div className="grid-2">
             {field('name',  'Full Name',      'text',  { placeholder: 'John Doe' })}
             {field('email', 'Email Address',  'email', { placeholder: 'john@hospital.lk', autoComplete: 'off' })}
@@ -78,7 +78,7 @@ export default function AdminForm({ admin, onSave, onClose, saving }) {
           <div className="form-group">
             <label>Role</label>
             <select className="form-control" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}>
-              {ROLES.map(r => <option key={r}>{r}</option>)}
+              {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
 
@@ -87,15 +87,15 @@ export default function AdminForm({ admin, onSave, onClose, saving }) {
             'password',
             { autoComplete: 'new-password', placeholder: '••••••••' }
           )}
+        </div>
 
-          <div className="modal-footer">
-            <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={saving}>
-              {saving ? 'Saving…' : (isEdit ? 'Save Changes' : 'Create Admin')}
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
+          <button type="submit" className="btn btn-primary" disabled={saving}>
+            {saving ? 'Saving…' : (isEdit ? 'Save Changes' : 'Create Admin')}
+          </button>
+        </div>
+      </form>
     </div>,
     document.body
   );

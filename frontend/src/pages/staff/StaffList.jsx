@@ -1,6 +1,5 @@
-// ─── Staff List ──────────────────────────────────────────────────
 import { useState, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import ConfirmModal from '../../components/ConfirmModal';
 import StaffForm from './StaffForm';
 import * as staffService from '../../services/staffService';
 
@@ -90,7 +89,7 @@ export default function StaffList() {
             placeholder="Search staff…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{ width: '250px', padding: '10px 14px', marginBottom: 0 }}
+            style={{ width: '250px' }}
           />
           <div className="text-muted text-sm ml-2">
             <b>{staff.length}</b> Staff Members ({staff.filter(s => s.role !== 'Inactive').length} Active)
@@ -139,10 +138,8 @@ export default function StaffList() {
                   <td className="text-muted text-xs">{i + 1}</td>
                   <td style={{ fontWeight: 600 }}>{s.firstName} {s.lastName}</td>
                   <td className="text-muted">{s.email}</td>
-                  <td>
-                    <span className={`status ${ROLE_BADGE[s.role] || 'info'}`}>
-                      {s.role}
-                    </span>
+                  <td style={{ fontWeight: 700, color: '#111827' }}>
+                    {typeof s.role === 'string' ? s.role.toUpperCase() : s.role}
                   </td>
                   <td>{s.department}</td>
                   <td className="text-muted text-xs">{s.staffId}</td>
@@ -172,23 +169,14 @@ export default function StaffList() {
       )}
 
       {/* Delete Confirm Modal */}
-      {deleting && createPortal(
-        <div className="modal-overlay" onClick={() => setDeleting(null)}>
-          <div className="modal" style={{ maxWidth: 380 }} onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Delete Staff</h2>
-              <button className="modal-close" onClick={() => setDeleting(null)}>×</button>
-            </div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-              Are you sure you want to delete this staff member? This action cannot be undone.
-            </p>
-            <div className="modal-footer" style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button className="btn btn-secondary" onClick={() => setDeleting(null)}>Cancel</button>
-              <button className="btn btn-danger" onClick={() => handleDelete(deleting)}>Delete</button>
-            </div>
-          </div>
-        </div>,
-        document.body
+      {deleting && (
+        <ConfirmModal 
+          title="Delete Staff Member"
+          message="Are you sure you want to delete this staff member? This will permanently remove their access to the system."
+          onConfirm={() => handleDelete(deleting)}
+          onCancel={() => setDeleting(null)}
+          confirmText="Delete Staff"
+        />
       )}
     </>
   );

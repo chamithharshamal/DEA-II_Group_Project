@@ -107,85 +107,87 @@ const LabReportForm = ({ onSuccess }) => {
         </div>
       )}
 
-      <div className="grid-2" style={{ alignItems: 'flex-start' }}>
+      <div className="grid-2" style={{ alignItems: 'flex-start', gap: '32px' }}>
         {/* Create New Test Request Form */}
-        <div style={{ background: 'var(--off-white)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border)' }}>
-          <h3 style={{ margin: '0 0 20px 0', paddingBottom: '12px', borderBottom: '1px solid var(--border)' }}>
-            + Create New Test Request
-          </h3>
-          <form onSubmit={submitNewReport} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div className="form-group">
-              <label>Patient ID *</label>
-              <input
-                type="text"
-                name="patientId"
-                required
-                value={formData.patientId}
-                onChange={handleCreateChange}
-                className="input-field"
-              />
+        <div className="modal" style={{ position: 'relative', width: '100%', maxWidth: 'none', margin: 0, boxShadow: 'var(--shadow-md)' }}>
+          <div className="modal-header">
+            <h2 style={{ fontSize: '1.25rem' }}>+ Create Test Request</h2>
+          </div>
+          
+          <form onSubmit={submitNewReport}>
+            <div className="modal-body">
+              <div className="grid-2">
+                <div className="form-group">
+                  <label>Patient ID *</label>
+                  <input
+                    type="text"
+                    name="patientId"
+                    required
+                    value={formData.patientId}
+                    onChange={handleCreateChange}
+                    className="form-control"
+                    placeholder="P-1001"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Doctor ID *</label>
+                  <input
+                    type="text"
+                    name="doctorId"
+                    required
+                    value={formData.doctorId}
+                    onChange={handleCreateChange}
+                    className="form-control"
+                    placeholder="D-2002"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Test Type *</label>
+                <select
+                  name="testType"
+                  value={formData.testType}
+                  onChange={handleCreateChange}
+                  className="form-control"
+                >
+                  <option value="BLOOD_TEST">Blood Test</option>
+                  <option value="URINE_TEST">Urine Test</option>
+                  <option value="XRAY">X-Ray</option>
+                  <option value="MRI">MRI</option>
+                  <option value="CT_SCAN">CT Scan</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Test Name / Description *</label>
+                <input
+                  type="text"
+                  name="testName"
+                  required
+                  value={formData.testName}
+                  onChange={handleCreateChange}
+                  placeholder="e.g. Complete Blood Count (CBC)"
+                  className="form-control"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Additional Notes</label>
+                <textarea
+                  name="notes"
+                  rows="2"
+                  value={formData.notes}
+                  onChange={handleCreateChange}
+                  className="form-control"
+                />
+              </div>
             </div>
 
-            <div className="form-group">
-              <label>Doctor ID *</label>
-              <input
-                type="text"
-                name="doctorId"
-                required
-                value={formData.doctorId}
-                onChange={handleCreateChange}
-                className="input-field"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Test Type *</label>
-              <select
-                name="testType"
-                value={formData.testType}
-                onChange={handleCreateChange}
-                className="input-field"
-              >
-                <option value="BLOOD_TEST">Blood Test</option>
-                <option value="URINE_TEST">Urine Test</option>
-                <option value="XRAY">X-Ray</option>
-                <option value="MRI">MRI</option>
-                <option value="CT_SCAN">CT Scan</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Test Name / Description *</label>
-              <input
-                type="text"
-                name="testName"
-                required
-                value={formData.testName}
-                onChange={handleCreateChange}
-                placeholder="e.g. Complete Blood Count (CBC)"
-                className="input-field"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Additional Notes</label>
-              <textarea
-                name="notes"
-                rows="2"
-                style={{ resize: 'vertical' }}
-                value={formData.notes}
-                onChange={handleCreateChange}
-                className="input-field"
-              />
-            </div>
-
-            <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-end' }}>
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn btn-primary"
-              >
+            <div className="modal-footer">
+              <button type="submit" disabled={loading} className="btn btn-primary" style={{ width: '100%' }}>
                 Create Request
               </button>
             </div>
@@ -193,69 +195,75 @@ const LabReportForm = ({ onSuccess }) => {
         </div>
 
         {/* Submit Results Form */}
-        <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid var(--primary-blue-light)', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.05)' }}>
-          <h3 style={{ margin: '0 0 20px 0', paddingBottom: '12px', borderBottom: '1px solid var(--border)' }}>
-            🔬 Submit Test Results
-          </h3>
+        <div className="modal" style={{ position: 'relative', width: '100%', maxWidth: 'none', margin: 0, boxShadow: 'var(--shadow-blue)' }}>
+          <div className="modal-header" style={{ background: 'var(--blue-lt)' }}>
+            <h2 style={{ fontSize: '1.25rem' }}>🔬 Submit Results</h2>
+          </div>
           
           {inProgressReports.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)', border: '2px dashed var(--border)', borderRadius: '8px' }}>
-              No reports are currently <strong>IN_PROGRESS</strong>.<br/><br/>
-              Go to Pending Tests and mark a test as "Start" first.
+            <div className="modal-body" style={{ padding: '60px 40px', textAlign: 'center' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '16px', opacity: 0.5 }}>🧪</div>
+              <p style={{ color: 'var(--text-tertiary)', fontSize: '0.95rem' }}>
+                No reports are currently <strong>IN_PROGRESS</strong>.
+              </p>
+              <p className="text-muted text-xs mt-2">
+                Start a test from the pending list to add results.
+              </p>
             </div>
           ) : (
-            <form onSubmit={submitTestResults} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div className="form-group">
-                <label>Select Report *</label>
-                <select
-                  required
-                  value={activeReportId}
-                  onChange={(e) => setActiveReportId(e.target.value)}
-                  className="input-field"
-                >
-                  <option value="" disabled>Select an in-progress lab report</option>
-                  {inProgressReports.map(report => (
-                    <option key={report.reportId} value={report.reportId}>
-                      {report.reportId} - {report.testName} ({report.patientId})
-                    </option>
-                  ))}
-                </select>
+            <form onSubmit={submitTestResults}>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label>Select Report *</label>
+                  <select
+                    required
+                    value={activeReportId}
+                    onChange={(e) => setActiveReportId(e.target.value)}
+                    className="form-control"
+                  >
+                    <option value="" disabled>Select in-progress report</option>
+                    {inProgressReports.map(report => (
+                      <option key={report.reportId} value={report.reportId}>
+                        {report.reportId} - {report.testName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Test Results *</label>
+                  <textarea
+                    name="results"
+                    required
+                    rows="5"
+                    value={resultsData.results}
+                    onChange={handleResultsChange}
+                    className="form-control"
+                    placeholder="Enter final readings and findings..."
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Normal Range (Reference)</label>
+                  <input
+                    type="text"
+                    name="normalRange"
+                    value={resultsData.normalRange}
+                    onChange={handleResultsChange}
+                    className="form-control"
+                    placeholder="e.g. 10.5 - 18.0 g/dL"
+                  />
+                </div>
               </div>
 
-              <div className="form-group">
-                <label>Test Results *</label>
-                <textarea
-                  name="results"
-                  required
-                  rows="4"
-                  style={{ resize: 'vertical' }}
-                  value={resultsData.results}
-                  onChange={handleResultsChange}
-                  className="input-field"
-                  placeholder="Enter final readings and qualitative findings..."
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Normal Range (Reference)</label>
-                <input
-                  type="text"
-                  name="normalRange"
-                  value={resultsData.normalRange}
-                  onChange={handleResultsChange}
-                  className="input-field"
-                  placeholder="e.g. 10.5 - 18.0 g/dL"
-                />
-              </div>
-
-              <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-end' }}>
+              <div className="modal-footer">
                 <button
                   type="submit"
                   disabled={loading || !activeReportId}
                   className="btn btn-primary"
-                  style={{ background: 'var(--success)' }}
+                  style={{ background: 'var(--success)', width: '100%' }}
                 >
-                  Submit & Complete Report
+                  Submit & Complete
                 </button>
               </div>
             </form>

@@ -75,179 +75,184 @@ export default function BillingForm({ onSuccess }) {
     };
 
     return (
-        <div className="card" style={{ marginTop: '20px', maxWidth: '800px' }}>
-            <h2 style={{ marginBottom: '24px' }}>Create New Bill</h2>
-
-            {error && (
-                <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '12px', borderRadius: '8px', marginBottom: '24px' }}>
-                    {error}
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                
-                {/* Patient / Appointment */}
-                <div>
-                    <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--primary-blue-dark)' }}>Patient & Appointment Details</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                        <div>
-                            <label>Patient ID *</label>
-                            <input
-                                type="text"
-                                name="patientId"
-                                value={formData.patientId}
-                                onChange={handleChange}
-                                required
-                                className="input-field"
-                            />
-                        </div>
-                        <div>
-                            <label>Doctor ID *</label>
-                            <input
-                                type="text"
-                                name="doctorId"
-                                value={formData.doctorId}
-                                onChange={handleChange}
-                                required
-                                className="input-field"
-                            />
-                        </div>
-                        <div>
-                            <label>Appointment ID</label>
-                            <input
-                                type="text"
-                                name="appointmentId"
-                                value={formData.appointmentId}
-                                onChange={handleChange}
-                                className="input-field"
-                            />
-                        </div>
-                    </div>
+        <div style={{ padding: '24px' }}>
+            <div className="modal" style={{ position: 'relative', width: '100%', maxWidth: '800px', margin: '0 auto', boxShadow: 'var(--shadow-md)' }}>
+                <div className="modal-header">
+                    <h2>🧾 Create New Bill</h2>
+                    {onSuccess && <button type="button" className="modal-close" onClick={onSuccess}>×</button>}
                 </div>
 
-                {/* Fee Breakdown */}
-                <div style={{ background: 'var(--off-white)', padding: '24px', borderRadius: '12px' }}>
-                    <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--primary-blue-dark)' }}>Fee Breakdown</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                        <div>
-                            <label>Consultation Fee ($)</label>
-                            <input
-                                type="number"
-                                name="consultationFee"
-                                step="0.01" min="0"
-                                value={formData.consultationFee}
-                                onChange={handleChange}
-                                className="input-field"
-                            />
-                        </div>
-                        <div>
-                            <label>Lab Test Fee ($)</label>
-                            <input
-                                type="number"
-                                name="labTestFee"
-                                step="0.01" min="0"
-                                value={formData.labTestFee}
-                                onChange={handleChange}
-                                className="input-field"
-                            />
-                        </div>
-                        <div>
-                            <label>Medication Fee ($)</label>
-                            <input
-                                type="number"
-                                name="medicationFee"
-                                step="0.01" min="0"
-                                value={formData.medicationFee}
-                                onChange={handleChange}
-                                className="input-field"
-                            />
-                        </div>
-                        <div>
-                            <label>Other Fees ($)</label>
-                            <input
-                                type="number"
-                                name="otherFee"
-                                step="0.01" min="0"
-                                value={formData.otherFee}
-                                onChange={handleChange}
-                                className="input-field"
-                            />
-                        </div>
-                    </div>
-
-                    <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '16px' }}>
-                        <span className="text-muted" style={{ fontWeight: 600 }}>Preview Total:</span>
-                        {isCalculating ? (
-                            <span className="text-muted">Calculating...</span>
-                        ) : (
-                            <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                                ${totalPreview.toFixed(2)}
-                            </span>
+                <form onSubmit={handleSubmit}>
+                    <div className="modal-body">
+                        {error && (
+                            <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '16px', borderRadius: '12px', marginBottom: '24px', border: '1px solid rgba(239, 68, 68, 0.1)' }}>
+                                ⚠️ {error}
+                            </div>
                         )}
-                    </div>
-                </div>
 
-                {/* Logistics */}
-                <div>
-                    <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--primary-blue-dark)' }}>Payment & Logistics</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                        <div>
-                            <label>Payment Method</label>
-                            <select
-                                name="paymentMethod"
-                                value={formData.paymentMethod}
-                                onChange={handleChange}
-                                className="input-field"
-                            >
-                                <option value="CASH">Cash</option>
-                                <option value="CREDIT_CARD">Credit Card</option>
-                                <option value="DEBIT_CARD">Debit Card</option>
-                                <option value="INSURANCE">Insurance</option>
-                                <option value="BANK_TRANSFER">Bank Transfer</option>
-                            </select>
+                        <div className="grid-3" style={{ marginBottom: '32px' }}>
+                            <div className="form-group">
+                                <label>Patient ID *</label>
+                                <input
+                                    type="text"
+                                    name="patientId"
+                                    value={formData.patientId}
+                                    onChange={handleChange}
+                                    required
+                                    className="form-control"
+                                    placeholder="P-1001"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Doctor ID *</label>
+                                <input
+                                    type="text"
+                                    name="doctorId"
+                                    value={formData.doctorId}
+                                    onChange={handleChange}
+                                    required
+                                    className="form-control"
+                                    placeholder="D-2002"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Appointment ID</label>
+                                <input
+                                    type="text"
+                                    name="appointmentId"
+                                    value={formData.appointmentId}
+                                    onChange={handleChange}
+                                    className="form-control"
+                                    placeholder="APP-5005"
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label>Due Date</label>
-                            <input
-                                type="date"
-                                name="dueDate"
-                                value={formData.dueDate}
-                                onChange={handleChange}
-                                className="input-field"
-                            />
+
+                        <div style={{ background: 'var(--off-white)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border)', marginBottom: '32px' }}>
+                            <h3 style={{ fontSize: '1rem', marginBottom: '20px', color: 'var(--text-primary)', fontWeight: 700 }}>💰 Fee Breakdown</h3>
+                            <div className="grid-2" style={{ gap: '24px' }}>
+                                <div className="form-group">
+                                    <label>Consultation Fee</label>
+                                    <input
+                                        type="number"
+                                        name="consultationFee"
+                                        step="0.01" min="0"
+                                        value={formData.consultationFee}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Lab Test Fee</label>
+                                    <input
+                                        type="number"
+                                        name="labTestFee"
+                                        step="0.01" min="0"
+                                        value={formData.labTestFee}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Medication Fee</label>
+                                    <input
+                                        type="number"
+                                        name="medicationFee"
+                                        step="0.01" min="0"
+                                        value={formData.medicationFee}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Other Fees</label>
+                                    <input
+                                        type="number"
+                                        name="otherFee"
+                                        step="0.01" min="0"
+                                        value={formData.otherFee}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '16px' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>Total Amount:</span>
+                                <div style={{ minWidth: '120px', textAlign: 'right' }}>
+                                    {isCalculating ? (
+                                        <span style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>Calculating...</span>
+                                    ) : (
+                                        <span style={{ fontSize: '2.25rem', fontWeight: 900, color: 'var(--primary-blue-dark)', letterSpacing: '-0.02em' }}>
+                                            ${totalPreview.toFixed(2)}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                        <div style={{ gridColumn: '1 / -1' }}>
+
+                        <div className="grid-2">
+                            <div className="form-group">
+                                <label>Payment Method</label>
+                                <select
+                                    name="paymentMethod"
+                                    value={formData.paymentMethod}
+                                    onChange={handleChange}
+                                    className="form-control"
+                                >
+                                    <option value="CASH">Cash</option>
+                                    <option value="CREDIT_CARD">Credit Card</option>
+                                    <option value="DEBIT_CARD">Debit Card</option>
+                                    <option value="INSURANCE">Insurance</option>
+                                    <option value="BANK_TRANSFER">Bank Transfer</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Due Date</label>
+                                <input
+                                    type="date"
+                                    name="dueDate"
+                                    value={formData.dueDate}
+                                    onChange={handleChange}
+                                    className="form-control"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group" style={{ marginTop: '16px' }}>
                             <label>Remarks</label>
                             <textarea
                                 name="remarks"
                                 value={formData.remarks}
                                 onChange={handleChange}
                                 rows="3"
-                                className="input-field"
+                                className="form-control"
                                 placeholder="Any additional notes..."
-                                style={{ resize: 'vertical' }}
-                            ></textarea>
+                            />
                         </div>
                     </div>
-                </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}>
-                    <button
-                        type="button"
-                        onClick={() => { if(onSuccess) onSuccess(); }}
-                        className="btn btn-secondary"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="btn btn-primary"
-                    >
-                        {isSubmitting ? 'Creating...' : 'Create Bill'}
-                    </button>
-                </div>
-            </form>
+                    <div className="modal-footer" style={{ padding: '24px 32px' }}>
+                        {onSuccess && (
+                            <button
+                                type="button"
+                                onClick={onSuccess}
+                                className="btn btn-outline"
+                            >
+                                Cancel
+                            </button>
+                        )}
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="btn btn-primary"
+                            style={{ minWidth: '160px' }}
+                        >
+                            {isSubmitting ? 'Creating...' : '🚀 Create Bill'}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }

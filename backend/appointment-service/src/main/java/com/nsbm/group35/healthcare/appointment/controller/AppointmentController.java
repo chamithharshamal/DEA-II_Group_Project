@@ -33,6 +33,12 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAppointmentById(id));
     }
 
+    @GetMapping
+    public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
+        log.info("Fetching all appointments");
+        return ResponseEntity.ok(appointmentService.getAllAppointments());
+    }
+
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<List<AppointmentDTO>> getByPatient(@PathVariable String patientId) {
         log.info("Fetching appointments for patient ID: {}", patientId);

@@ -95,13 +95,13 @@ export default function DoctorForm({ doctor, onSave, onClose, saving }) {
 
   return createPortal(
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 640 }} onClick={e => e.stopPropagation()}>
+      <form onSubmit={handleSubmit} className="modal" style={{ maxWidth: 640 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{isEdit ? '✏️ Edit Doctor' : '+ Add Doctor'}</h2>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button type="button" className="modal-close" onClick={onClose}>×</button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <div className="modal-body">
           <div className="grid-2">
             {field('firstName', 'First Name', 'text', { placeholder: 'Jane' })}
             {field('lastName',  'Last Name',  'text', { placeholder: 'Smith' })}
@@ -125,15 +125,15 @@ export default function DoctorForm({ doctor, onSave, onClose, saving }) {
             'password',
             { autoComplete: 'new-password', placeholder: '••••••••' }
           )}
+        </div>
 
-          <div className="modal-footer">
-            <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={saving}>
-              {saving ? 'Saving…' : (isEdit ? 'Save Changes' : 'Create Doctor')}
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
+          <button type="submit" className="btn btn-primary" disabled={saving}>
+            {saving ? 'Saving…' : (isEdit ? 'Save Changes' : 'Create Doctor')}
+          </button>
+        </div>
+      </form>
     </div>,
     document.body
   );

@@ -61,28 +61,32 @@ const LabReportList = ({ statusFilter }) => {
   return (
     <>
       {/* Filters and Search */}
-      <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: '250px' }}>
-          <input
-            type="text"
-            className="input-field"
-            placeholder="Search by Patient ID or Report ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        
-        <div style={{ flex: 1, minWidth: '200px' }}>
-          <select
-            className="input-field"
-            value={testTypeFilter}
-            onChange={(e) => setTestTypeFilter(e.target.value)}
-          >
-            <option value="">All Test Types</option>
-            {testTypes.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
+      <div style={{ padding: '24px', borderBottom: '1px solid var(--border)', background: 'var(--off-white)', borderRadius: '12px', margin: '8px 0 24px 0' }}>
+        <div className="grid-2">
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label style={{ fontSize: '0.8rem', opacity: 0.8 }}>Patient / Report ID</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search reports…"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label style={{ fontSize: '0.8rem', opacity: 0.8 }}>Test Category</label>
+            <select
+              className="form-control"
+              value={testTypeFilter}
+              onChange={(e) => setTestTypeFilter(e.target.value)}
+            >
+              <option value="">All Test Types</option>
+              {testTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 

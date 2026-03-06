@@ -1,6 +1,8 @@
 import api from './api'; // Import the team's shared Axios instance
 
 // ── Appointments ──────────────────────────────────────────────────────────────
+export const getAllAppointments = () => api.get('/api/appointments').then(r => r.data);
+
 export const getAppointmentsByPatient = (patientId) => api.get(`/api/appointments/patient/${patientId}`).then(r => r.data);
 
 export const getAppointmentsByDoctor = (doctorId) => api.get(`/api/appointments/doctor/${doctorId}`).then(r => r.data);
