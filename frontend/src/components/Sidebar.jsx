@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const navItems = [
   { section: 'Management', roles: ['admin', 'staff'] },
@@ -18,6 +18,15 @@ const navItems = [
 
 export default function Sidebar({ isOpen, closeSidebar }) {
   const activeRole = localStorage.getItem('activeRole') || 'guest';
+  const navigate = useNavigate();
+
+  // Clears every auth key and redirects to login
+  function handleLogout() {
+    const keys = ['token', 'activeRole', 'adminToken', 'doctorToken', 'patientToken',
+                  'pharmacistToken', 'labToken', 'staffToken', 'doctorId', 'patientId'];
+    keys.forEach(k => localStorage.removeItem(k));
+    navigate('/login', { replace: true });
+  }
 
   // Filter items based on role
   const filteredNav = navItems.filter(item => {
@@ -55,10 +64,27 @@ export default function Sidebar({ isOpen, closeSidebar }) {
 
       <div className="sidebar-footer">
         <div style={{ marginBottom: 2, fontWeight: 600, fontSize: '0.73rem', color: 'var(--text-primary)' }}>HealthCare HMS</div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', marginBottom: 4, textTransform: 'capitalize' }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', marginBottom: 8, textTransform: 'capitalize' }}>
           Role: {activeRole.replace('_', ' ')}
         </div>
-        <div>123 Hospital Rd, Colombo · v1.0</div>
+        <div style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', marginBottom: 10 }}>123 Hospital Rd, Colombo · v1.0</div>
+        <button
+          onClick={handleLogout}
+          style={{
+            width: '100%',
+            padding: '8px 0',
+            background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 8,
+            fontSize: '0.8rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            letterSpacing: '0.03em',
+          }}
+        >
+          🔒 Logout
+        </button>
       </div>
     </aside>
   );

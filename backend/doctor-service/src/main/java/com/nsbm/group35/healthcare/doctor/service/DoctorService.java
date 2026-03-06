@@ -65,7 +65,7 @@ public class DoctorService {
             throw new RuntimeException("Invalid password");
         }
 
-        return jwtUtil.generateToken(doctor.getEmail());
+        return jwtUtil.generateToken(doctor.getEmail(), "DOCTOR");
     }
 
     public List<DoctorDTO> getAllDoctors() {

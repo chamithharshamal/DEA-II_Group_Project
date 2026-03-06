@@ -26,7 +26,10 @@ export async function loginAdmin(email, password) {
 }
 
 export function logoutAdmin() {
+  // Clear all auth-related keys so PrivateRoute redirects to /login
   localStorage.removeItem('adminToken');
+  localStorage.removeItem('token');
+  localStorage.removeItem('activeRole');
 }
 
 // ── Admins ────────────────────────────────────────────────────────────────────

@@ -31,7 +31,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll())
+                        // Lab technician login is public
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/lab-reports/login").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/lab/login").permitAll()
+                        // Lab report operations require LAB, DOCTOR, or ADMIN role
+                        .anyRequest().hasAnyRole("LAB", "DOCTOR", "ADMIN"))
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

@@ -15,9 +15,18 @@ import LabReportRoutes    from './pages/lab';
 import StaffRoutes        from './pages/staff';
 import NotificationRoutes from './pages/notification';
 
+// ── General auth guard — redirects to /login if no role is stored ──────────────
 const PrivateRoute = ({ children }) => {
   const activeRole = localStorage.getItem('activeRole');
   if (!activeRole) return <Navigate to="/login" replace />;
+  return children;
+};
+
+// ── Role-specific guard — redirects to /login if the current role isn't allowed ─
+const RoleRoute = ({ allowedRoles, children }) => {
+  const activeRole = localStorage.getItem('activeRole');
+  if (!activeRole) return <Navigate to="/login" replace />;
+  if (!allowedRoles.includes(activeRole)) return <Navigate to="/login" replace />;
   return children;
 };
 
@@ -36,15 +45,16 @@ export default function App() {
           <PrivateRoute>
             <Layout>
               <Routes>
-                <Route path="admin/*"          element={<AdminRoutes />} />
-                <Route path="patients/*"       element={<PatientRoutes />} />
-                <Route path="doctors/*"        element={<DoctorRoutes />} />
-                <Route path="appointments/*"   element={<AppointmentRoutes />} />
-                <Route path="billing/*"        element={<BillingRoutes />} />
-                <Route path="pharmacy/*"       element={<PharmacyRoutes />} />
-                <Route path="lab-reports/*"    element={<LabReportRoutes />} />
-                <Route path="staff/*"          element={<StaffRoutes />} />
-                <Route path="notifications/*"  element={<NotificationRoutes />} />
+                {/* Each route is wrapped in RoleRoute to enforce RBAC */}
+                <Route path="admin/*"        element={<RoleRoute allowedRoles={['admin']}><AdminRoutes /></RoleRoute>} />
+                <Route path="patients/*"     element={<RoleRoute allowedRoles={['patient', 'admin', 'doctor']}><PatientRoutes /></RoleRoute>} />
+                <Route path="doctors/*"      element={<RoleRoute allowedRoles={['doctor', 'admin']}><DoctorRoutes /></RoleRoute>} />
+                <Route path="appointments/*" element={<RoleRoute allowedRoles={['patient', 'doctor', 'admin', 'staff']}><AppointmentRoutes /></RoleRoute>} />
+                <Route path="billing/*"      element={<RoleRoute allowedRoles={['admin', 'staff']}><BillingRoutes /></RoleRoute>} />
+                <Route path="pharmacy/*"     element={<RoleRoute allowedRoles={['pharmacist', 'admin']}><PharmacyRoutes /></RoleRoute>} />
+                <Route path="lab-reports/*"  element={<RoleRoute allowedRoles={['lab', 'doctor', 'admin']}><LabReportRoutes /></RoleRoute>} />
+                <Route path="staff/*"        element={<RoleRoute allowedRoles={['staff', 'admin']}><StaffRoutes /></RoleRoute>} />
+                <Route path="notifications/*" element={<RoleRoute allowedRoles={['patient', 'doctor', 'admin', 'staff', 'pharmacist', 'lab']}><NotificationRoutes /></RoleRoute>} />
               </Routes>
             </Layout>
           </PrivateRoute>

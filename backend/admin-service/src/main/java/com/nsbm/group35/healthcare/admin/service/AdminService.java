@@ -55,7 +55,7 @@ public class AdminService {
             throw new RuntimeException("Invalid password");
         }
 
-        return jwtUtil.generateToken(admin.getEmail());
+        return jwtUtil.generateToken(admin.getEmail(), "ADMIN");
     }
 
     public List<AdminDTO> getAllAdmins() {

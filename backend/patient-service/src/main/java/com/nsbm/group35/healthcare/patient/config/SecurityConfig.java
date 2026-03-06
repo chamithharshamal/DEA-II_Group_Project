@@ -33,8 +33,8 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/patients/login").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/patients").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/patients/**").permitAll()
-                        // All other endpoints require a valid JWT
-                        .anyRequest().authenticated())
+                        // Mutating patient data requires PATIENT or ADMIN role
+                        .anyRequest().hasAnyRole("PATIENT", "ADMIN"))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

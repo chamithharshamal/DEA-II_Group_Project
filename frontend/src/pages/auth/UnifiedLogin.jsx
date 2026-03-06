@@ -25,6 +25,7 @@ async function performLogin(role, email, password) {
       const { loginAdmin } = await import('../../services/adminService');
       const data = await loginAdmin(email, password);
       localStorage.setItem('adminToken', data.token);
+      localStorage.setItem('token', data.token);       // shared key read by api.js
       localStorage.setItem('activeRole', 'admin');
       return;
     }
@@ -32,6 +33,7 @@ async function performLogin(role, email, password) {
       const api = (await import('../../services/api')).default;
       const { data } = await api.post('/api/doctors/login', { email, password });
       localStorage.setItem('doctorToken', data.token);
+      localStorage.setItem('token', data.token);       // shared key read by api.js
       localStorage.setItem('doctorId', data.id ?? data.doctorId ?? '');
       localStorage.setItem('activeRole', 'doctor');
       return;
@@ -40,6 +42,7 @@ async function performLogin(role, email, password) {
       const api = (await import('../../services/api')).default;
       const { data } = await api.post('/api/patients/login', { email, password });
       localStorage.setItem('patientToken', data.token);
+      localStorage.setItem('token', data.token);       // shared key read by api.js
       localStorage.setItem('patientId', data.id ?? data.patientId ?? '');
       localStorage.setItem('activeRole', 'patient');
       return;
@@ -48,6 +51,7 @@ async function performLogin(role, email, password) {
       const { default: pharmacyService } = await import('../../services/pharmacyService');
       const data = await pharmacyService.loginPharmacist({ email, password });
       localStorage.setItem('pharmacistToken', data.token);
+      localStorage.setItem('token', data.token);       // shared key read by api.js
       localStorage.setItem('activeRole', 'pharmacist');
       return;
     }
@@ -55,6 +59,7 @@ async function performLogin(role, email, password) {
       const api = (await import('../../services/api')).default;
       const { data } = await api.post('/api/lab/login', { email, password });
       localStorage.setItem('labToken', data.token);
+      localStorage.setItem('token', data.token);       // shared key read by api.js
       localStorage.setItem('activeRole', 'lab');
       return;
     }
@@ -62,6 +67,7 @@ async function performLogin(role, email, password) {
       const api = (await import('../../services/api')).default;
       const { data } = await api.post('/api/staff/login', { email, password });
       localStorage.setItem('staffToken', data.token);
+      localStorage.setItem('token', data.token);       // shared key read by api.js
       localStorage.setItem('activeRole', 'staff');
       return;
     }

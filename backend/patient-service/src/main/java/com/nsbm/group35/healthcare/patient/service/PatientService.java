@@ -65,7 +65,7 @@ public class PatientService {
             throw new RuntimeException("Invalid password");
         }
 
-        return jwtUtil.generateToken(patient.getEmail());
+        return jwtUtil.generateToken(patient.getEmail(), "PATIENT");
     }
 
     public List<PatientDTO> getAllPatients() {

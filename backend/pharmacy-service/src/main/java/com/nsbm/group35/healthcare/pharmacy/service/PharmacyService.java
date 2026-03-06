@@ -52,7 +52,7 @@ public class PharmacyService {
             throw new RuntimeException("Invalid credentials");
         }
 
-        String token = jwtUtil.generateToken(pharmacist.getEmail());
+        String token = jwtUtil.generateToken(pharmacist.getEmail(), "PHARMACIST");
         PharmacistDTO response = new PharmacistDTO(pharmacist);
         response.setToken(token);
         return response;

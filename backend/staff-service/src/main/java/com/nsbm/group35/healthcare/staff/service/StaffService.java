@@ -26,7 +26,8 @@ public class StaffService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
-    public StaffService(StaffRepository staffRepository, ShiftRepository shiftRepository, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+    public StaffService(StaffRepository staffRepository, ShiftRepository shiftRepository, JwtUtil jwtUtil,
+            PasswordEncoder passwordEncoder) {
         this.staffRepository = staffRepository;
         this.shiftRepository = shiftRepository;
         this.jwtUtil = jwtUtil;
@@ -53,7 +54,8 @@ public class StaffService {
         dto.setFirstName(staff.getFirstName());
         dto.setLastName(staff.getLastName());
         dto.setEmail(staff.getEmail());
-        // Do not return password in DTO generally, but keeping for parity with admin if needed
+        // Do not return password in DTO generally, but keeping for parity with admin if
+        // needed
         dto.setPassword(staff.getPassword());
         dto.setRole(staff.getRole());
         dto.setDepartment(staff.getDepartment());
@@ -81,7 +83,7 @@ public class StaffService {
             throw new RuntimeException("Invalid password");
         }
 
-        return jwtUtil.generateToken(staff.getEmail());
+        return jwtUtil.generateToken(staff.getEmail(), "STAFF");
     }
 
     // --- Staff Methods ---
@@ -129,12 +131,12 @@ public class StaffService {
         log.info("Assigning shift to staff ID: {}", shiftDTO.getStaffId());
         Staff staff = staffRepository.findById(shiftDTO.getStaffId())
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
-        
+
         Shift shift = new Shift();
         shift.setStartTime(shiftDTO.getStartTime());
         shift.setEndTime(shiftDTO.getEndTime());
         shift.setStaff(staff);
-        
+
         return toShiftDTO(shiftRepository.save(shift));
     }
 
