@@ -9,7 +9,7 @@ export const getAppointmentsByDoctor = (doctorId) => api.get(`/api/appointments/
 
 export const getAppointmentById = (id) => api.get(`/api/appointments/${id}`).then(r => r.data);
 
-export const bookAppointment   = (dto) => api.post('/api/appointments', dto).then(r => r.data);
+export const bookAppointment = (dto) => api.post('/api/appointments', dto).then(r => r.data);
 export const createAppointment = (dto) => api.post('/api/appointments', dto).then(r => r.data); // alias used by AppointmentModal
 
 export const cancelAppointment = (id) => api.patch(`/api/appointments/${id}/cancel`).then(r => r.data);
@@ -17,3 +17,5 @@ export const cancelAppointment = (id) => api.patch(`/api/appointments/${id}/canc
 export const completeAppointment = (id) => api.patch(`/api/appointments/${id}/complete`).then(r => r.data);
 
 export const getTodaysAppointments = (doctorId) => api.get(`/api/appointments/doctor/${doctorId}/today`).then(r => r.data);
+
+export const searchAppointments = (params) => api.get('/api/appointments/search', { params }).then(r => r.data);

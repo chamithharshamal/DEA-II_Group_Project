@@ -68,4 +68,11 @@ public class AppointmentController {
         log.info("Fetching today's appointments for doctor ID: {}", doctorId);
         return ResponseEntity.ok(appointmentService.getTodaysAppointments(doctorId));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AppointmentDTO>> searchAppointments(@RequestParam(required = false) String doctorId,
+            @RequestParam(required = false) String patientId) {
+        log.info("Searching appointments with doctorId: {} and patientId: {}", doctorId, patientId);
+        return ResponseEntity.ok(appointmentService.searchAppointments(doctorId, patientId));
+    }
 }

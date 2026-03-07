@@ -100,6 +100,12 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    public List<AppointmentDTO> searchAppointments(String doctorId, String patientId) {
+        return appointmentRepository.searchAppointments(doctorId, patientId).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
     private Appointment toEntity(AppointmentDTO dto) {
         return Appointment.builder()
                 .id(dto.getId())

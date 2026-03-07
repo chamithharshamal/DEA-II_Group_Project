@@ -64,6 +64,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/api/appointments': {
+        target: 'http://localhost:8086',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })

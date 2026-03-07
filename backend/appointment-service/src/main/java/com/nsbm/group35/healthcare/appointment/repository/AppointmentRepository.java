@@ -14,4 +14,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, String
     List<Appointment> findByDoctorId(String doctorId);
 
     List<Appointment> findByDoctorIdAndStatus(String doctorId, String status);
+
+    @org.springframework.data.jpa.repository.Query("SELECT a FROM Appointment a WHERE " +
+            "(:doctorId IS NULL OR a.doctorId = :doctorId) AND " +
+            "(:patientId IS NULL OR a.patientId = :patientId)")
+    List<Appointment> searchAppointments(@org.springframework.data.repository.query.Param("doctorId") String doctorId,
+            @org.springframework.data.repository.query.Param("patientId") String patientId);
 }

@@ -128,7 +128,7 @@ const AppointmentList = () => {
                                 </td>
                                 <td style={{ padding: '12px' }}>
                                     <button
-                                        onClick={() => navigate(`/appointments/${app.id}`)}
+                                        onClick={() => navigate(`${app.id}`)}
                                         style={{ padding: '5px 10px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                                     >
                                         View Details
