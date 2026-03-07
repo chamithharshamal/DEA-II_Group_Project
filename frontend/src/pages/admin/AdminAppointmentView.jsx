@@ -54,41 +54,47 @@ export default function AdminAppointmentView() {
 
     return (
         <div className="admin-appointment-view">
-            <div style={{ marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569' }}>Doctor ID</label>
-                    <input
-                        type="text"
-                        className="admin-input"
-                        style={{ width: '200px' }}
-                        placeholder="Search by Doctor ID"
-                        value={filters.doctorId}
-                        onChange={(e) => setFilters({ ...filters, doctorId: e.target.value })}
-                    />
+            <div className="flex-between mb-4 mt-2" style={{ gap: '16px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label>Doctor ID</label>
+                        <input
+                            type="text"
+                            className="input-field"
+                            style={{ width: '200px' }}
+                            placeholder="Doctor UUID..."
+                            value={filters.doctorId}
+                            onChange={(e) => setFilters({ ...filters, doctorId: e.target.value })}
+                        />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label>Patient ID</label>
+                        <input
+                            type="text"
+                            className="input-field"
+                            style={{ width: '200px' }}
+                            placeholder="Patient UUID..."
+                            value={filters.patientId}
+                            onChange={(e) => setFilters({ ...filters, patientId: e.target.value })}
+                        />
+                    </div>
+                    <button className="btn btn-primary" onClick={handleSearch} disabled={loading}>
+                        {loading ? 'Searching...' : '🔍 Search'}
+                    </button>
+                    <button className="btn btn-secondary" onClick={handleClear} disabled={loading}>
+                        ↺ Clear
+                    </button>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569' }}>Patient ID</label>
-                    <input
-                        type="text"
-                        className="admin-input"
-                        style={{ width: '200px' }}
-                        placeholder="Search by Patient ID"
-                        value={filters.patientId}
-                        onChange={(e) => setFilters({ ...filters, patientId: e.target.value })}
-                    />
-                </div>
-                <button className="btn-primary" onClick={handleSearch} disabled={loading}>
-                    {loading ? 'Searching...' : '🔍 Search'}
-                </button>
-                <button className="btn-secondary" onClick={handleClear} disabled={loading}>
-                    ↺ Clear
-                </button>
             </div>
 
-            {error && <div className="error-message" style={{ marginBottom: '16px' }}>{error}</div>}
+            {error && (
+                <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '12px', borderRadius: '8px', marginBottom: '16px' }}>
+                    ⚠️ {error}
+                </div>
+            )}
 
-            <div className="table-responsive">
-                <table className="admin-table">
+            <div className="table-container mt-4">
+                <table className="data-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -101,22 +107,32 @@ export default function AdminAppointmentView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {appointments.length > 0 ? (
+                        {loading ? (
+                            <tr>
+                                <td colSpan="7" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)' }}>
+                                    Searching appointments...
+                                </td>
+                            </tr>
+                        ) : appointments.length > 0 ? (
                             appointments.map((apt) => (
                                 <tr key={apt.id}>
-                                    <td style={{ fontSize: '0.75rem', color: '#64748b' }}>{apt.id}</td>
+                                    <td className="text-muted text-xs">{apt.id.substring(0, 8)}...</td>
                                     <td>{apt.patientId}</td>
                                     <td>{apt.doctorId}</td>
-                                    <td>{new Date(apt.appointmentTime).toLocaleString()}</td>
+                                    <td style={{ fontWeight: 600 }}>{new Date(apt.appointmentTime).toLocaleString()}</td>
                                     <td>
-                                        <span className={`badge badge-${apt.status?.toLowerCase()}`}>
+                                        <span className={`status ${apt.status === 'PLANNED' ? 'pending' :
+                                                apt.status === 'CANCELLED' ? 'cancelled' : 'success'
+                                            }`}>
                                             {apt.status}
                                         </span>
                                     </td>
-                                    <td>{apt.reason}</td>
+                                    <td className="text-muted" style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {apt.reason}
+                                    </td>
                                     <td style={{ textAlign: 'right' }}>
                                         <button
-                                            className="btn-link"
+                                            className="btn btn-sm btn-outline"
                                             onClick={() => navigate(`/app/appointments/${apt.id}`)}
                                         >
                                             View details
@@ -126,8 +142,8 @@ export default function AdminAppointmentView() {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-                                    No appointments found.
+                                <td colSpan="7" style={{ textAlign: 'center', padding: '60px', color: 'var(--text-secondary)' }}>
+                                    No appointments found matching your search.
                                 </td>
                             </tr>
                         )}

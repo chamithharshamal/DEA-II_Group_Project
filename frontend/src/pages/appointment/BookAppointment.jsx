@@ -35,93 +35,88 @@ const BookAppointment = () => {
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '40px auto', padding: '30px', border: '1px solid #eee', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}>
-            <h2 style={{ marginBottom: '25px', textAlign: 'center', color: '#1a202c' }}>Book New Appointment</h2>
+        <div className="book-appointment-page">
+            <div className="page-header">
+                <h1>Book Appointment</h1>
+                <p>Schedule a new consultation with our specialist doctors.</p>
+            </div>
 
-            {status.message && (
-                <div style={{
-                    padding: '12px',
-                    marginBottom: '20px',
-                    borderRadius: '4px',
-                    backgroundColor: status.type === 'success' ? '#c6f6d5' : '#fed7d7',
-                    color: status.type === 'success' ? '#22543d' : '#822727',
-                    textAlign: 'center'
-                }}>
-                    {status.message}
-                </div>
-            )}
+            <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <h2 style={{ marginBottom: '24px', fontSize: '1.25rem' }}>Appointment Information</h2>
 
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '18px' }}>
-                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#4a5568' }}>Patient ID</label>
-                    <input
-                        type="text"
-                        name="patientId"
-                        value={formData.patientId}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter Patient UUID"
-                        style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '16px' }}
-                    />
-                </div>
+                {status.message && (
+                    <div style={{
+                        padding: '12px 16px',
+                        marginBottom: '24px',
+                        borderRadius: 'var(--radius-sm)',
+                        backgroundColor: status.type === 'success' ? 'var(--success-bg)' : 'var(--danger-bg)',
+                        color: status.type === 'success' ? 'var(--success)' : 'var(--danger)',
+                        fontWeight: 500,
+                        border: `1px solid ${status.type === 'success' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`
+                    }}>
+                        {status.type === 'success' ? '✅' : '⚠️'} {status.message}
+                    </div>
+                )}
 
-                <div style={{ marginBottom: '18px' }}>
-                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#4a5568' }}>Doctor ID</label>
-                    <input
-                        type="text"
-                        name="doctorId"
-                        value={formData.doctorId}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter Doctor UUID"
-                        style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '16px' }}
-                    />
-                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Patient ID</label>
+                        <input
+                            type="text"
+                            name="patientId"
+                            className="input-field"
+                            value={formData.patientId}
+                            onChange={handleChange}
+                            required
+                            placeholder="e.g. p123-uuid"
+                        />
+                    </div>
 
-                <div style={{ marginBottom: '18px' }}>
-                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#4a5568' }}>Appointment Time</label>
-                    <input
-                        type="datetime-local"
-                        name="appointmentTime"
-                        value={formData.appointmentTime}
-                        onChange={handleChange}
-                        required
-                        style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '16px' }}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label>Doctor ID</label>
+                        <input
+                            type="text"
+                            name="doctorId"
+                            className="input-field"
+                            value={formData.doctorId}
+                            onChange={handleChange}
+                            required
+                            placeholder="e.g. d456-uuid"
+                        />
+                    </div>
 
-                <div style={{ marginBottom: '25px' }}>
-                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#4a5568' }}>Reason for Visit</label>
-                    <textarea
-                        name="reason"
-                        value={formData.reason}
-                        onChange={handleChange}
-                        required
-                        placeholder="Describe the reason for the appointment"
-                        style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '16px', minHeight: '120px' }}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label>Appointment Time</label>
+                        <input
+                            type="datetime-local"
+                            name="appointmentTime"
+                            className="input-field"
+                            value={formData.appointmentTime}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
 
-                <button
-                    type="submit"
-                    style={{
-                        width: '100%',
-                        padding: '12px',
-                        backgroundColor: '#4a90e2',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '6px',
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.2s'
-                    }}
-                    onMouseOver={(e) => e.target.style.backgroundColor = '#357abd'}
-                    onMouseOut={(e) => e.target.style.backgroundColor = '#4a90e2'}
-                >
-                    Confirm Appointment
-                </button>
-            </form>
+                    <div className="form-group">
+                        <label>Reason for Visit</label>
+                        <textarea
+                            name="reason"
+                            className="input-field"
+                            value={formData.reason}
+                            onChange={handleChange}
+                            required
+                            placeholder="Briefly describe the medical concern..."
+                            style={{ minHeight: '120px', resize: 'vertical' }}
+                        />
+                    </div>
+
+                    <div style={{ marginTop: '32px' }}>
+                        <button type="submit" className="btn btn-primary" style={{ width: '100%', height: '50px', fontSize: '1.05rem' }}>
+                            Confirm & Schedule Appointment
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

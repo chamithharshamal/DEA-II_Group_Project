@@ -57,92 +57,107 @@ const AppointmentList = () => {
     };
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-            <h2 style={{ color: '#333' }}>Appointments</h2>
+        <div className="appointment-list-page">
+            <div className="page-header">
+                <h1>Appointment Management</h1>
+                <p>View, search, and manage hospital appointments.</p>
+            </div>
 
-            <form onSubmit={handleSearch} style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-                <select
-                    value={searchType}
-                    onChange={(e) => setSearchType(e.target.value)}
-                    style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-                >
-                    <option value="patient">Search by Patient ID</option>
-                    <option value="doctor">Search by Doctor ID</option>
-                </select>
-                <input
-                    type="text"
-                    placeholder={`Enter ${searchType} ID`}
-                    value={searchId}
-                    onChange={(e) => setSearchId(e.target.value)}
-                    style={{ padding: '8px', width: '250px', borderRadius: '4px', border: '1px solid #ccc' }}
-                />
-                <button
-                    type="submit"
-                    style={{ padding: '8px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                    Find
-                </button>
-                {searchId && (
-                    <button
-                        type="button"
-                        onClick={clearSearch}
-                        style={{ padding: '8px 15px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                    >
-                        Clear
+            <div className="card" style={{ padding: '24px' }}>
+                <div className="flex-between mb-4 mt-2">
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <select
+                            className="input-field"
+                            value={searchType}
+                            onChange={(e) => setSearchType(e.target.value)}
+                            style={{ width: '200px' }}
+                        >
+                            <option value="patient">Search by Patient ID</option>
+                            <option value="doctor">Search by Doctor ID</option>
+                        </select>
+                        <input
+                            type="text"
+                            className="input-field"
+                            placeholder={`Enter ${searchType} ID...`}
+                            value={searchId}
+                            onChange={(e) => setSearchId(e.target.value)}
+                            style={{ width: '300px' }}
+                        />
+                        <button className="btn btn-primary" onClick={handleSearch} disabled={loading}>
+                            {loading ? 'Searching...' : '🔍 Find'}
+                        </button>
+                        {searchId && (
+                            <button className="btn btn-secondary" onClick={clearSearch}>
+                                ↺ Clear
+                            </button>
+                        )}
+                    </div>
+
+                    <button className="btn btn-primary" onClick={() => navigate('book')}>
+                        + New Appointment
                     </button>
+                </div>
+
+                {error && (
+                    <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '12px', borderRadius: '8px', marginBottom: '16px' }}>
+                        ⚠️ {error}
+                    </div>
                 )}
-            </form>
 
-            {loading && <p>Loading appointments...</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-
-            {!loading && appointments.length > 0 && (
-                <table style={{ width: '100%', borderCollapse: 'collapse', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-                    <thead>
-                        <tr style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #dee2e6' }}>
-                            <th style={{ padding: '12px', textAlign: 'left' }}>ID</th>
-                            <th style={{ padding: '12px', textAlign: 'left' }}>Time</th>
-                            <th style={{ padding: '12px', textAlign: 'left' }}>Doctor ID</th>
-                            <th style={{ padding: '12px', textAlign: 'left' }}>Patient ID</th>
-                            <th style={{ padding: '12px', textAlign: 'left' }}>Status</th>
-                            <th style={{ padding: '12px', textAlign: 'left' }}>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {appointments.map((app) => (
-                            <tr key={app.id} style={{ borderBottom: '1px solid #eee' }}>
-                                <td style={{ padding: '12px' }}>{app.id.substring(0, 8)}...</td>
-                                <td style={{ padding: '12px' }}>{new Date(app.appointmentTime).toLocaleString()}</td>
-                                <td style={{ padding: '12px' }}>{app.doctorId}</td>
-                                <td style={{ padding: '12px' }}>{app.patientId}</td>
-                                <td style={{ padding: '12px' }}>
-                                    <span style={{
-                                        padding: '4px 8px',
-                                        borderRadius: '12px',
-                                        fontSize: '0.8em',
-                                        backgroundColor: app.status === 'PLANNED' ? '#e3f2fd' : app.status === 'CANCELLED' ? '#fbe9e7' : '#e8f5e9',
-                                        color: app.status === 'PLANNED' ? '#1976d2' : app.status === 'CANCELLED' ? '#d32f2f' : '#388e3c'
-                                    }}>
-                                        {app.status}
-                                    </span>
-                                </td>
-                                <td style={{ padding: '12px' }}>
-                                    <button
-                                        onClick={() => navigate(`${app.id}`)}
-                                        style={{ padding: '5px 10px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                                    >
-                                        View Details
-                                    </button>
-                                </td>
+                <div className="table-container mt-4">
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Time</th>
+                                <th>Doctor ID</th>
+                                <th>Patient ID</th>
+                                <th>Status</th>
+                                <th style={{ textAlign: 'right' }}>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
-
-            {!loading && appointments.length === 0 && (
-                <p>No appointments found.</p>
-            )}
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={6} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)' }}>
+                                        Loading appointments...
+                                    </td>
+                                </tr>
+                            ) : appointments.length > 0 ? (
+                                appointments.map((app) => (
+                                    <tr key={app.id}>
+                                        <td className="text-muted text-xs">{app.id.substring(0, 8)}...</td>
+                                        <td style={{ fontWeight: 600 }}>{new Date(app.appointmentTime).toLocaleString()}</td>
+                                        <td>{app.doctorId}</td>
+                                        <td>{app.patientId}</td>
+                                        <td>
+                                            <span className={`status ${app.status === 'PLANNED' ? 'pending' :
+                                                    app.status === 'CANCELLED' ? 'cancelled' : 'success'
+                                                }`}>
+                                                {app.status}
+                                            </span>
+                                        </td>
+                                        <td style={{ textAlign: 'right' }}>
+                                            <button
+                                                className="btn btn-sm btn-outline"
+                                                onClick={() => navigate(`${app.id}`)}
+                                            >
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
+                                        No appointments found.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
 };

@@ -49,65 +49,68 @@ const AppointmentDetail = () => {
     if (!appointment) return <div style={{ padding: '20px' }}>Appointment not found.</div>;
 
     return (
-        <div style={{ padding: '20px', maxWidth: '800px', margin: '20px auto', border: '1px solid #ddd', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-            <button onClick={() => navigate(-1)} style={{ marginBottom: '20px', cursor: 'pointer' }}>&larr; Back</button>
-
-            <h2 style={{ borderBottom: '2px solid #eee', paddingBottom: '10px' }}>Appointment Details</h2>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
-                <div>
-                    <p><strong>Appointment ID:</strong></p>
-                    <p>{appointment.id}</p>
-                </div>
-                <div>
-                    <p><strong>Status:</strong></p>
-                    <p>
-                        <span style={{
-                            padding: '4px 12px',
-                            borderRadius: '16px',
-                            backgroundColor: appointment.status === 'PLANNED' ? '#e3f2fd' : appointment.status === 'CANCELLED' ? '#fbe9e7' : '#e8f5e9',
-                            color: appointment.status === 'PLANNED' ? '#1976d2' : appointment.status === 'CANCELLED' ? '#d32f2f' : '#388e3c'
-                        }}>
-                            {appointment.status}
-                        </span>
-                    </p>
-                </div>
-                <div>
-                    <p><strong>Patient ID:</strong></p>
-                    <p>{appointment.patientId}</p>
-                </div>
-                <div>
-                    <p><strong>Doctor ID:</strong></p>
-                    <p>{appointment.doctorId}</p>
-                </div>
-                <div>
-                    <p><strong>Time:</strong></p>
-                    <p>{new Date(appointment.appointmentTime).toLocaleString()}</p>
-                </div>
-                <div style={{ gridColumn: 'span 2' }}>
-                    <p><strong>Reason:</strong></p>
-                    <p style={{ backgroundColor: '#f9f9f9', padding: '10px', borderRadius: '4px', borderLeft: '4px solid #007bff' }}>
-                        {appointment.reason}
-                    </p>
-                </div>
+        <div className="appointment-detail-page">
+            <div className="page-header">
+                <h1>Appointment Details</h1>
+                <p>Detailed view and management for appointment {appointment.id.substring(0, 8)}...</p>
             </div>
 
-            {appointment.status === 'PLANNED' && (
-                <div style={{ marginTop: '30px', display: 'flex', gap: '15px' }}>
-                    <button
-                        onClick={handleComplete}
-                        style={{ padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                    >
-                        Mark Completed
+            <div className="card" style={{ maxWidth: '900px', margin: '0 auto' }}>
+                <div className="flex-between mb-4">
+                    <button className="btn btn-secondary" onClick={() => navigate(-1)}>
+                        &larr; Back to List
                     </button>
-                    <button
-                        onClick={handleCancel}
-                        style={{ padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                    >
-                        Cancel Appointment
-                    </button>
+                    <span className={`status ${appointment.status === 'PLANNED' ? 'pending' :
+                            appointment.status === 'CANCELLED' ? 'cancelled' : 'success'
+                        }`}>
+                        {appointment.status}
+                    </span>
                 </div>
-            )}
+
+                <div className="grid-2" style={{ gap: '32px', marginTop: '24px' }}>
+                    <div className="info-group">
+                        <label>Appointment ID</label>
+                        <div style={{ fontWeight: 500, color: 'var(--text-primary)', wordBreak: 'break-all' }}>{appointment.id}</div>
+                    </div>
+                    <div className="info-group">
+                        <label>Appointment Time</label>
+                        <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{new Date(appointment.appointmentTime).toLocaleString()}</div>
+                    </div>
+                    <div className="info-group">
+                        <label>Patient ID</label>
+                        <div className="text-muted">{appointment.patientId}</div>
+                    </div>
+                    <div className="info-group">
+                        <label>Doctor ID</label>
+                        <div className="text-muted">{appointment.doctorId}</div>
+                    </div>
+                    <div className="form-group" style={{ gridColumn: 'span 2' }}>
+                        <label>Reason for Visit</label>
+                        <div style={{
+                            background: 'var(--off-white)',
+                            padding: '20px',
+                            borderRadius: 'var(--radius-md)',
+                            borderLeft: '4px solid var(--primary-blue)',
+                            fontSize: '1rem',
+                            color: 'var(--text-secondary)',
+                            lineHeight: '1.6'
+                        }}>
+                            {appointment.reason}
+                        </div>
+                    </div>
+                </div>
+
+                {appointment.status === 'PLANNED' && (
+                    <div style={{ marginTop: '40px', display: 'flex', gap: '16px', borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
+                        <button className="btn btn-primary" onClick={handleComplete}>
+                            Mark as Completed
+                        </button>
+                        <button className="btn btn-danger" onClick={handleCancel}>
+                            Cancel Appointment
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
