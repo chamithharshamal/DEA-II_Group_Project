@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Admin login is public so users can obtain a token
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/admin/login").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/admins/login").permitAll()
                         // Only ADMIN role can access all other admin endpoints
                         .anyRequest().hasRole("ADMIN"))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

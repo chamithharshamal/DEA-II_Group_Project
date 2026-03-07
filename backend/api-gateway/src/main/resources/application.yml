@@ -9,7 +9,7 @@ spring:
     gateway:
       globalcors:
         cors-configurations:
-          '[/**]':
+          "[/**]":
             allowedOrigins: "*"
             allowedMethods:
               - GET
@@ -28,9 +28,9 @@ spring:
         - id: admin-service
           uri: lb://admin-service
           predicates:
-            - Path=/api/admin/**
+            - Path=/api/admins/**
           filters:
-            - StripPrefix=2   # /api/admin/users -> /users
+            - StripPrefix=0 # AdminController already includes /api/admins in RequestMapping
 
         # Patient Service
         - id: patient-service
@@ -38,7 +38,7 @@ spring:
           predicates:
             - Path=/api/patients/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=0
 
         # Doctor Service
         - id: doctor-service
@@ -46,7 +46,7 @@ spring:
           predicates:
             - Path=/api/doctors/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=0
 
         # Appointment Service
         - id: appointment-service
@@ -54,7 +54,7 @@ spring:
           predicates:
             - Path=/api/appointments/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=0
 
         # Billing Service
         - id: billing-service
@@ -62,7 +62,7 @@ spring:
           predicates:
             - Path=/api/billing/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=0
 
         # Lab Report Service
         - id: lab-report-service
@@ -70,7 +70,7 @@ spring:
           predicates:
             - Path=/api/lab-reports/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=0
 
         # Notification Service
         - id: notification-service
@@ -78,7 +78,7 @@ spring:
           predicates:
             - Path=/api/notifications/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=0
 
         # Pharmacy Service
         - id: pharmacy-service
@@ -86,7 +86,7 @@ spring:
           predicates:
             - Path=/api/pharmacy/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=0
 
         # Staff Service
         - id: staff-service
@@ -94,7 +94,7 @@ spring:
           predicates:
             - Path=/api/staff/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=0
 
       # Enable service discovery-based routing
       discovery:
